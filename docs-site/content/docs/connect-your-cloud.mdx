@@ -1,0 +1,70 @@
+---
+title: Connect your cloud
+description: Grant Nimbus scoped, per-user access to AWS, GCP, Supabase, Neon, and GitHub.
+---
+
+Open **Connections** (the plug icon in the rail) to connect providers. Each connection is **per-user** and runs in an isolated process with only your credentials, never the host's environment.
+
+<Info>
+Connections are scoped to you even inside a shared project. Connecting a cloud spawns your own scoped access; disconnecting tears it down.
+</Info>
+
+## AWS
+
+<Tabs items={["Access keys", "IAM role"]}>
+  <Tab value="Access keys">
+    Paste an **Access key ID**, **Secret access key**, and a default **region**. Nimbus uses these to run AWS commands on your behalf.
+  </Tab>
+  <Tab value="IAM role">
+    Paste a **Role ARN** and an optional **External ID**. Nimbus assumes the role via STS, **no long-lived keys are stored**. This is the recommended method for teams.
+  </Tab>
+</Tabs>
+
+Once connected, Nimbus can reach EC2, S3, RDS, Lambda, VPC, IAM, ECS, CloudWatch (logs + metrics), and Cost Explorer.
+
+## GCP
+
+<Tabs items={["Connect with Google", "Service Account JSON"]}>
+  <Tab value="Connect with Google">
+    A keyless **OAuth** flow, click **Connect with Google**, approve access, and you're done. Nothing to paste.
+  </Tab>
+  <Tab value="Service Account JSON">
+    Paste a **Service Account JSON** key. The GCP project is auto-detected from the key. Good for CI-style service identities.
+  </Tab>
+</Tabs>
+
+Once connected, Nimbus can run any `gcloud` command and has dedicated tools for **Cloud Run** (list/inspect services, read logs, deploy).
+
+## Databases
+
+<CardGroup cols={2}>
+  <Card title="Supabase">
+    Paste a personal access token (<code>sbp_…</code>). Nimbus can list/create projects, alter tables, run SQL, manage migrations, branches, and edge functions.
+  </Card>
+  <Card title="Neon">
+    Paste an API key (<code>napi_…</code>). Nimbus gets full Neon database management, projects, branches, tables, and SQL.
+  </Card>
+</CardGroup>
+
+## GitHub
+
+Connect GitHub via OAuth (a popup + poll). This lets Nimbus read your repositories, files, issues, pull requests, and workflow runs, used when analyzing a repo to design matching infrastructure, and when dispatching a code [repair](/docs/repairs).
+
+## Azure
+
+<Info>
+Azure is listed in Connections but the connector is **coming soon**, it's not yet available.
+</Info>
+
+## What "connected" unlocks
+
+| You connect | Nimbus can then… |
+|-------------|------------------|
+| AWS | Inventory, run any AWS CLI, telemetry, logs, real cost, deploy |
+| GCP | Inventory, run any gcloud, Cloud Run tools, telemetry, logs, real cost, deploy |
+| Supabase / Neon | Full database management (tables, SQL, migrations, branches) |
+| GitHub | Read repos/PRs/issues; ground infra design in your actual code |
+
+<Note>
+Before any cloud is connected, Nimbus runs in a **demo mode** with sample resources so you can see the workflow. Connecting AWS or GCP switches it to live operations.
+</Note>

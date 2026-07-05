@@ -1,0 +1,58 @@
+---
+title: Resources, Overview & Cost
+description: See everything running across your clouds, monitor it live, and track real spend.
+---
+
+Beyond chat, Nimbus gives you dashboards that reflect your real cloud: **Overview**, **Resources**, and **Cost** (in the rail).
+
+## Overview
+
+A cloud-at-a-glance for the active project:
+
+<CardGroup cols={2}>
+  <Card title="KPIs">
+    Resources managed, Needs attention (degraded count), Monthly spend, and Clouds connected.
+  </Card>
+  <Card title="Attention bar">
+    If a resource is degraded, a bar deep-links you straight into Chat with a diagnosis prompt pre-filled.
+  </Card>
+  <Card title="Live logs">
+    A tail of CloudWatch / Cloud Logging across your clouds.
+  </Card>
+  <Card title="Live telemetry">
+    CPU, traffic, latency, and errors per running resource.
+  </Card>
+</CardGroup>
+
+## Resources
+
+A single table of everything running across your connected clouds, with **Name, Type, Cloud, Region, and Status**. Rows open a detail page for that resource.
+
+<Info>
+Inventory is **live**, pulled from your real cloud via official APIs, with no mock data once a cloud is connected. It covers GCP (Cloud Run, Compute Engine, Cloud SQL, Cloud Storage) and AWS (EC2, S3, Lambda), among others.
+</Info>
+
+If nothing's there yet, the empty state points you to connect a cloud or ask the agent to create a resource.
+
+## Cost
+
+Real **month-to-date** spend for your connected clouds, actuals, not estimates.
+
+<Tabs items={["AWS", "GCP"]}>
+  <Tab value="AWS">
+    Pulled from **Cost Explorer**, grouped by service, for the current month.
+  </Tab>
+  <Tab value="GCP">
+    Pulled from your **Cloud Billing → BigQuery export**, aggregated by service for the current invoice month.
+  </Tab>
+</Tabs>
+
+Each cloud shows a **total for the month** and a **breakdown by service** (top services), with a period header and a Refresh button.
+
+<Note>
+Cost has honest per-cloud statuses. If billing data isn't available yet you'll see **needs-setup** with a step-by-step "how to enable" guide (turning on AWS Cost Explorer or the GCP BigQuery billing export), **pending** (enabled, data not landed yet), or **error**. Amounts are in USD.
+</Note>
+
+<Tip>
+You can also just ask in chat: <b>"what am I spending this month?"</b>, Nimbus reads the same real billing data.
+</Tip>

@@ -1,0 +1,64 @@
+---
+title: The Canvas
+description: A live architecture diagram of your cloud, the agent draws planned infrastructure and overlays real resources, and you deploy it with a sentence.
+---
+
+The **Canvas** (the panel icon in the rail) is a visual map of your project's cloud. It combines two things in one diagram:
+
+- **Planned nodes**, infrastructure Nimbus draws in design mode before anything is built.
+- **Live resources**, your real cloud inventory, overlaid on the same canvas.
+
+The Canvas fills the screen with the Nimbus chat docked on the right, so you can talk and watch the architecture change together.
+
+<img src="/screenshots/canvas.png" alt="The Nimbus Canvas, planned cloud resources laid out as connected nodes" className="rounded-xl border border-border shadow-sm my-8 w-full" />
+
+## Nodes
+
+Each node is a service box with its cloud, real service type, name, region, and a structured **spec** using real field names (like `instance_type`, `allocated_storage`) that stays in sync with the Resources panel. Nodes are grouped by category:
+
+<CardGroup cols={2}>
+  <Card title="Compute · Storage">
+    EC2, Cloud Run, Lambda; S3, Cloud Storage.
+  </Card>
+  <Card title="Database · Cache">
+    RDS, Cloud SQL, Neon, Supabase; Redis / caches.
+  </Card>
+  <Card title="Network · Security">
+    Load balancers, VPCs; IAM and security groups.
+  </Card>
+  <Card title="Status">
+    <b>Planned</b> (amber), <b>live</b>, or <b>stopped</b>.
+  </Card>
+</CardGroup>
+
+Nodes auto-layout left→right in dependency order, and directed edges show how traffic and data flow between them.
+
+## Designing
+
+In **design mode**, ask Nimbus to sketch a system and it draws the nodes and connections for you:
+
+> **"Design a 3-tier web app with a load balancer, two app servers, and a Postgres database."**
+
+You can click any node to open its detail drawer and see its spec. Nothing is real yet, planned nodes show a *"Not deployed yet"* state.
+
+## Deploying
+
+<Steps>
+  <Step title="Switch to Agent mode and say deploy">
+    In the chat, tell Nimbus to deploy the canvas.
+  </Step>
+  <Step title="Nimbus provisions in dependency order">
+    It reads the design and creates the real resources honoring each node's spec, naming them to match.
+  </Step>
+  <Step title="Nodes flip to live">
+    As each resource is provisioned, its node turns from planned (amber) to live, in place.
+  </Step>
+</Steps>
+
+<Tip>
+Because deployed nodes are named after their canvas nodes, they line up with your real inventory, so the Canvas, Resources table, and your cloud all agree.
+</Tip>
+
+<Note>
+You can also ask Nimbus to <b>re-point</b> a node, for example swap an RDS database for Neon, and it updates the design accordingly.
+</Note>

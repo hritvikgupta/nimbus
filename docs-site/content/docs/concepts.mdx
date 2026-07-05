@@ -1,0 +1,47 @@
+---
+title: Concepts & glossary
+description: The core terms and ideas behind Nimbus.
+---
+
+## Project
+
+A workspace that connects its own clouds and (optionally) a GitHub repo. Everything, inventory, canvas, cost, chat, machines, is scoped to the active project. Connections within a project are still per-user.
+
+## Design mode vs Agent mode
+
+<CardGroup cols={2}>
+  <Card title="Design mode">
+    The agent only draws on the Canvas. No real cloud is touched. Used for planning architecture.
+  </Card>
+  <Card title="Agent mode">
+    The agent operates your real cloud, inventory, telemetry, logs, cost, deploys, databases.
+  </Card>
+</CardGroup>
+
+## Canvas node status
+
+| Status | Meaning |
+|--------|---------|
+| **Planned** (amber) | Drawn in design mode; not deployed yet. |
+| **Live** | A real, running resource (either deployed from the canvas or discovered in inventory). |
+| **Stopped** | A real resource that isn't currently running. |
+
+## The cloud-control protocol
+
+The safety rules the agent follows on real clouds: **discover before guessing, read before write, always scope by region/project, confirm before mutating anything billable, never reveal secrets.** See [How Nimbus works](/docs/how-nimbus-works).
+
+## Machine
+
+A computer that runs a coding agent (Claude Code / OpenCode) for [repairs](/docs/repairs). Either a **connected** teammate's computer, or a **rented** Nimbus Cloud machine. Nimbus dispatches code tasks to machines; it never edits code itself.
+
+## Repair
+
+A supervised code task: Nimbus turns your request into a brief, a machine's coding agent implements it in a clone of your repo, and it opens a PR, with Nimbus driving turn by turn.
+
+## Session summary
+
+A running work-summary a machine keeps so its context survives turns and teardown, and can be seeded onto a fresh machine to resume. See [Sessions & memory](/docs/sessions-and-memory).
+
+## Demo mode
+
+Before any cloud is connected, Nimbus responds using sample resources so you can see the workflow. Connecting AWS or GCP switches it to live operations.

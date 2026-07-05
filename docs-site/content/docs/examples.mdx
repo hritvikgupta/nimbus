@@ -1,0 +1,66 @@
+---
+title: Examples
+description: Real prompts and workflows to try with Nimbus, from inspecting your cloud to designing, deploying, diagnosing, and shipping fixes.
+---
+
+Concrete things to ask Nimbus. Each is a real workflow, copy a prompt into Chat and go.
+
+## Inspect what you have
+
+> **"What's running in my cloud right now?"**
+
+Nimbus queries live inventory across your connected clouds and lists it, and the same data fills the **Resources** table and the **Canvas**.
+
+> **"Show me all my RDS instances and their sizes."**
+
+## Diagnose an incident
+
+> **"The API has been slow for the last hour, what's going on?"**
+
+<Steps>
+  <Step title="Nimbus reads telemetry">
+    CPU, latency, error rate, connections for the service.
+  </Step>
+  <Step title="It reads the logs">
+    Tails CloudWatch / Cloud Logging for the real errors.
+  </Step>
+  <Step title="It reports the root cause">
+    …and proposes a fix, applying it only once you confirm.
+  </Step>
+</Steps>
+
+## Design and deploy infrastructure
+
+> **"Design a 3-tier web app: a load balancer, two app servers, and a Postgres database."**
+
+Watch it draw the architecture on the [Canvas](/docs/canvas). Then:
+
+> **"Looks good, deploy it."**
+
+Nimbus provisions the real resources in dependency order and flips each node from planned to live. (It shows a plan + cost estimate and waits for your go first.)
+
+## Track spend
+
+> **"What am I spending this month, broken down by service?"**
+
+Or open the **Cost** page for the same real month-to-date numbers.
+
+## Work from your repo
+
+> **"Analyze github.com/acme/api and design the infrastructure it needs."**
+
+Nimbus clones and analyzes the repo, then designs infra that matches what the code actually uses (databases, runtimes, providers).
+
+## Ship a code fix
+
+> **"There's a bug in the login flow, fix it and open a PR."**
+
+Nimbus dispatches a coding agent to a machine, which makes the change and opens a pull request while Nimbus supervises it turn by turn. See [Repairs](/docs/repairs).
+
+## Database work
+
+> **"Create a `users` table in my Supabase project with email + created_at, and add an index on email."**
+
+<Tip>
+Anything you can't do in chat yet, you can still do by asking, Nimbus will either do it or tell you exactly which connection to add in <b>Connections</b>.
+</Tip>

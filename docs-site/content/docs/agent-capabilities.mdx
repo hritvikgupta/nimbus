@@ -1,0 +1,67 @@
+---
+title: Agent capabilities
+description: Everything the Nimbus agent can do, grouped by area. Capabilities are enabled based on which clouds and services you've connected.
+---
+
+Nimbus assembles its capabilities per project based on what you've connected. This is the full surface, by area.
+
+## Cloud operations
+
+<Info>
+Nimbus operates clouds through their official command interfaces, scoped to your credentials, not a fixed set of per-service buttons. That means it can reach essentially any service the CLI can.
+</Info>
+
+| Area | What Nimbus can do |
+|------|--------------------|
+| **AWS** | Run any AWS CLI command (and suggest the right one). Reaches EC2, S3, RDS, Lambda, VPC, IAM, ECS, SQS, CloudWatch, Cost Explorer, and more. |
+| **GCP** | Run any `gcloud` command, with dedicated **Cloud Run** actions: list services, inspect a service, read service logs, and deploy. |
+| **Supabase** | Full database management: list/create projects, alter tables, run read + write SQL, migrations, branches, and edge functions. |
+| **Neon** | Full database management: projects, branches, tables, and SQL. |
+
+## Observability
+
+| Capability | Description |
+|-----------|-------------|
+| **Telemetry** | Live metrics, CPU, network, request count, latency, errors, connections, for a named resource (CloudWatch / Cloud Monitoring). |
+| **Logs** | Tail CloudWatch / Cloud Logging for a resource to find real errors. |
+| **Inventory** | Live resource list across connected clouds. |
+
+## Cost
+
+| Capability | Description |
+|-----------|-------------|
+| **Real spend** | Month-to-date actuals from AWS Cost Explorer and the GCP billing → BigQuery export, grouped by service. |
+| **Estimate** | Estimated cost for a planned stack, shown before any deploy. |
+
+## Canvas (design & deploy)
+
+| Mode | Capability |
+|------|-----------|
+| **Design** | Get the canvas, create a node, connect nodes, remove a node. |
+| **Deploy** | Read the design, provision real resources in dependency order, then mark nodes deployed (planned → live). Re-point a node to a different service. |
+
+## Code
+
+| Capability | Description |
+|-----------|-------------|
+| **Analyze a repo** | Clone + analyze a codebase into a grounded, cited architecture map. |
+| **Read a repo** | List repos, and (when a repo is connected) iteratively read files and grep the codebase. |
+
+<Note>
+Understanding a repo lets Nimbus design infrastructure that matches what the code <b>actually</b> uses, instead of guessing.
+</Note>
+
+## Repairs (code changes)
+
+| Capability | Description |
+|-----------|-------------|
+| **List machines** | Show the connected/rented machines that can run a repair. |
+| **Dispatch a repair** | Send a task to a machine's coding agent, which makes the change and opens a PR, Nimbus supervises turn by turn. |
+
+<Warning>
+Nimbus never edits application code itself. Every code change is routed to a coding agent on a machine. See <a href="/docs/repairs">Repairs</a>.
+</Warning>
+
+## GitHub
+
+When GitHub is connected, Nimbus can list pull requests, commits, workflow runs, and issues, and search code, used for repo-aware design and for opening/tracking repair PRs.

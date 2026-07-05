@@ -1,0 +1,36 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+# Vendored cloud-run-mcp ships the PUBLIC gcloud SDK OAuth client here (not a user secret,
+# same value as the gcp-oauth.mjs default) and the server needs it — keep it tracked.
+!server/mcp/cloud-run-mcp/.env.gcloud-sdk-oauth
+!server/mcp/**/.env.example
+
+# Encryption key + local data store (contains credentials, sessions)
+server/.data/
+!server/.data/.gitkeep
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+docs-site/out/
+docs-site/.next/
+docs-site/.source/
+deploy/*/dist/
+deploy/*/out/
+
+# Logs / OS
+*.log
+.DS_Store
+*.tsbuildinfo
+
+# Editor / misc
+.vscode/
+.idea/
+
+# Scratch / non-source
+videos/

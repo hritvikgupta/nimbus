@@ -1,0 +1,58 @@
+---
+title: Quickstart
+description: Connect a cloud and have Nimbus show you what's running, what it costs, and how to change it.
+---
+
+The fastest way to see what Nimbus does: connect a cloud and start asking.
+
+## 1. Create a project
+
+Each project connects its own clouds (and optionally a repo). Use the project switcher at the top of the sidebar → **New project**.
+
+## 2. Connect a cloud
+
+Open **Connections** (the plug icon in the rail) and connect **AWS** or **GCP**. Access is per-user and scoped to your credentials.
+
+<Tabs items={["AWS", "GCP"]}>
+  <Tab value="AWS">
+    Either paste **Access keys** (Access key ID + Secret + region), or connect an **IAM role** (Role ARN + optional External ID, Nimbus assumes it via STS, no keys stored).
+  </Tab>
+  <Tab value="GCP">
+    Either **Connect with Google** (keyless OAuth), or paste a **Service Account JSON** key (the project is auto-detected from the JSON).
+  </Tab>
+</Tabs>
+
+See [Connect your cloud](/docs/connect-your-cloud) for every provider and auth method.
+
+## 3. Ask Nimbus what's running
+
+Open **Chat** and try:
+
+> **"What's running in my cloud?"**
+
+Nimbus queries your real inventory across the connected clouds and lists it, you'll also see it populate the **Resources** table and the **Canvas**.
+
+<Info>
+Nimbus reads before it writes and never changes anything without showing you a plan first, so it's safe to explore.
+</Info>
+
+## 4. Go further
+
+<CardGroup cols={2}>
+  <Card title="Diagnose something" icon="play">
+    "Why is my API slow?", Nimbus reads telemetry + logs and root-causes it.
+  </Card>
+  <Card title="See your spend" icon="book">
+    Open **Cost**, or ask "what am I spending this month?"
+  </Card>
+  <Card title="Design infrastructure" icon="cloud">
+    "Design a 3-tier web app", watch it draw on the Canvas, then say "deploy".
+  </Card>
+  <Card title="Fix your app" icon="terminal">
+    "Fix the login bug and open a PR", Nimbus dispatches a coding agent to a machine.
+  </Card>
+</CardGroup>
+
+<Tip>
+No cloud connected yet? Nimbus still responds in a demo mode so you can feel the workflow, then connect AWS or GCP to make it real.
+</Tip>

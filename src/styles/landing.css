@@ -1,0 +1,53 @@
+/* Nimbus landing — keyframes + hover states. Most styling is inline in Landing.jsx (faithful
+   to the provided design); only animations and :hover (which inline styles can't express) live here. */
+@keyframes dashflow{to{stroke-dashoffset:-24;}}
+@keyframes nbCursor{0%,100%{transform:translate(0,0);}50%{transform:translate(-7px,-7px);}}
+@keyframes nbFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+@keyframes nbMsg{0%{opacity:0;transform:translateY(7px);}14%,78%{opacity:1;transform:translateY(0);}94%,100%{opacity:0;transform:translateY(7px);}}
+@keyframes nbGrow{0%,18%{transform:scaleX(0);}48%,100%{transform:scaleX(1);}}
+@keyframes nbPop{0%,38%{transform:scale(0);opacity:0;}58%{transform:scale(1.18);opacity:1;}74%,100%{transform:scale(1);opacity:1;}}
+@keyframes nbSpin{from{transform:rotate(45deg);}to{transform:rotate(405deg);}}
+@keyframes nbRise{from{transform:scaleY(0.3);}to{transform:scaleY(1);}}
+@keyframes nbCaret{0%,50%{opacity:1;}50.01%,100%{opacity:0;}}
+@keyframes nbWave{0%,100%{transform:scaleY(.32);}50%{transform:scaleY(1);}}
+@keyframes nbScan{0%{transform:translateX(0);opacity:0;}12%{opacity:1;}88%{opacity:1;}100%{transform:translateX(258px);opacity:0;}}
+@keyframes nbScanY{0%{transform:translateY(0);opacity:0;}15%{opacity:1;}85%{opacity:1;}100%{transform:translateY(60px);opacity:0;}}
+@keyframes nbShowA{0%,42%{opacity:1;}52%,100%{opacity:0;}}
+@keyframes nbShowB{0%,42%{opacity:0;}52%,100%{opacity:1;}}
+
+.lp *{box-sizing:border-box;}
+/* Framed "grid" view — centered frame with vertical side rails + horizontal section dividers. */
+.lp-frame{max-width:1280px;margin:0 auto;background:#fff;border-left:1px solid #e7e7e4;border-right:1px solid #e7e7e4;}
+.lp-frame>div{border-top:1px solid #ededeb;}
+.lp-frame>div:first-child{border-top:none;}
+.lp-link{transition:color .15s;text-decoration:none;}
+.lp-link:hover{color:#141414;}
+.lp-dark{transition:filter .15s, background .15s;}
+.lp-dark:hover{filter:brightness(1.18);}
+.lp-ghost{transition:background .15s, border-color .15s;}
+.lp-ghost:hover{background:#F4F7FE;border-color:#111;}
+.lp-soft:hover{background:#F5F5F5;}
+
+/* ── split-view landing (sticky left hero + scrolling right panels) ── */
+@keyframes splBlink{0%,49%{opacity:1}50%,100%{opacity:0}}
+.spl-cursor{display:inline-block;width:7px;height:1.05em;background:#141414;margin-left:2px;vertical-align:-2px;animation:splBlink 1s steps(1) infinite;}
+.spl-navrow{transition:background .18s ease,color .18s ease,border-color .18s ease;cursor:pointer;border-left:2px solid transparent;}
+.spl-navrow:hover{color:#141414;}
+.spl-card{transition:border-color .18s ease,background .18s ease,box-shadow .18s ease;}
+.spl-card:hover{border-color:#111;background:#FAFAF8;}
+/* Hide the sticky hero's own scrollbar (the dark thumb showed as a black line down the middle). */
+.spl-aside{scrollbar-width:none;-ms-overflow-style:none;}
+.spl-aside::-webkit-scrollbar{width:0;height:0;display:none;}
+.spl-btn{transition:filter .15s ease,background .15s ease,border-color .15s ease,color .15s ease;}
+.spl-btn-dark:hover{background:#E88A00;}
+.spl-btn-ghost:hover{border-color:#FF9900;color:#141414;background:rgba(255,153,0,0.08);}
+.spl-flow{display:block;width:22px;height:0;border-top:1.6px dashed #9a9a9a;background:none;animation:dashflow .9s linear infinite;}
+/* running-session live indicator + indeterminate progress bar */
+@keyframes spl-pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.spl-live-dot{animation:spl-pulse 1.1s ease-in-out infinite;}
+.spl-prog{position:relative;height:4px;border-radius:999px;background:#EFEFEC;overflow:hidden;}
+.spl-prog::after{content:'';position:absolute;top:0;left:-34%;height:100%;width:34%;border-radius:999px;background:#1a7f4b;animation:spl-progslide 1.5s ease-in-out infinite;}
+@keyframes spl-progslide{0%{left:-34%}100%{left:100%}}
+/* book-a-demo modal loading spinner */
+.spl-spin{display:inline-block;width:26px;height:26px;border-radius:50%;border:2.5px solid #E6E6E6;border-top-color:#FF9900;animation:spl-rot .7s linear infinite;}
+@keyframes spl-rot{to{transform:rotate(360deg)}}

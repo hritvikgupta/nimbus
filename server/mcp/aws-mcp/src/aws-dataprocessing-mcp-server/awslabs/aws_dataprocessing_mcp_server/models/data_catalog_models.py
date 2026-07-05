@@ -1,0 +1,642 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from enum import Enum
+from pydantic import BaseModel, Field
+from typing import Any, Dict, List, Optional
+
+
+class GlueOperation(str, Enum):
+    """AWS Glue Data Catalog operations."""
+
+    CREATE = 'create'
+    DELETE = 'delete'
+    GET = 'get'
+    LIST = 'list'
+    UPDATE = 'update'
+    SEARCH = 'search'
+    IMPORT = 'import'
+
+
+class DatabaseSummary(BaseModel):
+    """Summary of a Glue Data Catalog database."""
+
+    name: str = Field(..., description='Name of the database')
+    description: Optional[str] = Field(None, description='Description of the database')
+    location_uri: Optional[str] = Field(None, description='Location URI of the database')
+    parameters: Dict[str, str] = Field(default_factory=dict, description='Database parameters')
+    creation_time: Optional[str] = Field(None, description='Creation timestamp in ISO format')
+
+
+class TableSummary(BaseModel):
+    """Summary of a Glue Data Catalog table."""
+
+    name: str = Field(..., description='Name of the table')
+    database_name: str = Field(..., description='Name of the database containing the table')
+    owner: Optional[str] = Field(None, description='Owner of the table')
+    creation_time: Optional[str] = Field(None, description='Creation timestamp in ISO format')
+    update_time: Optional[str] = Field(None, description='Last update timestamp in ISO format')
+    last_access_time: Optional[str] = Field(
+        None, description='Last access timestamp in ISO format'
+    )
+    storage_descriptor: Dict[str, Any] = Field(
+        default_factory=dict, description='Storage descriptor information'
+    )
+    partition_keys: List[Dict[str, Any]] = Field(
+        default_factory=list, description='Partition key definitions'
+    )
+
+
+class ConnectionSummary(BaseModel):
+    """Summary of a Glue Data Catalog connection."""
+
+    name: str = Field(..., description='Name of the connection')
+    connection_type: str = Field(..., description='Type of the connection')
+    connection_properties: Dict[str, str] = Field(
+        default_factory=dict, description='Connection properties'
+    )
+    physical_connection_requirements: Optional[Dict[str, Any]] = Field(
+        None, description='Physical connection requirements'
+    )
+    creation_time: Optional[str] = Field(None, description='Creation timestamp in ISO format')
+    last_updated_time: Optional[str] = Field(
+        None, description='Last update timestamp in ISO format'
+    )
+
+
+class PartitionSummary(BaseModel):
+    """Summary of a Glue Data Catalog partition."""
+
+    values: List[str] = Field(..., description='Partition values')
+    database_name: str = Field(..., description='Name of the database')
+    table_name: str = Field(..., description='Name of the table')
+    creation_time: Optional[str] = Field(None, description='Creation timestamp in ISO format')
+    last_access_time: Optional[str] = Field(
+        None, description='Last access timestamp in ISO format'
+    )
+    storage_descriptor: Dict[str, Any] = Field(
+        default_factory=dict, description='Storage descriptor information'
+    )
+    parameters: Dict[str, str] = Field(default_factory=dict, description='Partition parameters')
+
+
+class CatalogSummary(BaseModel):
+    """Summary of a Glue Data Catalog."""
+
+    catalog_id: str = Field(..., description='ID of the catalog')
+    name: Optional[str] = Field(None, description='Name of the catalog')
+    description: Optional[str] = Field(None, description='Description of the catalog')
+    parameters: Dict[str, str] = Field(default_factory=dict, description='Catalog parameters')
+    create_time: Optional[str] = Field(None, description='Creation timestamp in ISO format')
+    update_time: Optional[str] = Field(None, description='Last update timestamp in ISO format')
+
+
+# Database Data Models
+class CreateDatabaseData(BaseModel):
+    """Data model for create database operation."""
+
+    database_name: str = Field(..., description='Name of the created database')
+    operation: str = Field(default='create', description='Operation performed')
+
+
+class DeleteDatabaseData(BaseModel):
+    """Data model for delete database operation."""
+
+    database_name: str = Field(..., description='Name of the deleted database')
+    operation: str = Field(default='delete', description='Operation performed')
+
+
+class GetDatabaseData(BaseModel):
+    """Data model for get database operation."""
+
+    database_name: str = Field(..., description='Name of the database')
+    description: Optional[str] = Field(None, description='Description of the database')
+    location_uri: Optional[str] = Field(None, description='Location URI of the database')
+    parameters: Dict[str, str] = Field(default_factory=dict, description='Database parameters')
+    creation_time: Optional[str] = Field(None, description='Creation timestamp in ISO format')
+    catalog_id: Optional[str] = Field(None, description='Catalog ID containing the database')
+    operation: str = Field(default='get', description='Operation performed')
+
+
+class ListDatabasesData(BaseModel):
+    """Data model for list databases operation."""
+
+    databases: List[DatabaseSummary] = Field(..., description='List of databases')
+    count: int = Field(..., description='Number of databases found')
+    catalog_id: Optional[str] = Field(None, description='Catalog ID used for listing')
+    operation: str = Field(default='list', description='Operation performed')
+    next_token: Optional[str] = Field(None, description='Token for the next page of results')
+
+
+class UpdateDatabaseData(BaseModel):
+    """Data model for update database operation."""
+
+    database_name: str = Field(..., description='Name of the updated database')
+    operation: str = Field(default='update', description='Operation performed')
+
+
+# Table Data Models
+class CreateTableData(BaseModel):
+    """Data model for create table operation."""
+
+    database_name: str = Field(..., description='Name of the database containing the table')
+    table_name: str = Field(..., description='Name of the created table')
+    operation: str = Field(default='create', description='Operation performed')
+
+
+class DeleteTableData(BaseModel):
+    """Data model for delete table operation."""
+
+    database_name: str = Field(..., description='Name of the database containing the table')
+    table_name: str = Field(..., description='Name of the deleted table')
+    operation: str = Field(default='delete', description='Operation performed')
+
+
+class GetTableData(BaseModel):
+    """Data model for get table operation."""
+
+    database_name: str = Field(..., description='Name of the database containing the table')
+    table_name: str = Field(..., description='Name of the table')
+    table_definition: Dict[str, Any] = Field(..., description='Complete table definition')
+    creation_time: Optional[str] = Field(None, description='Creation timestamp in ISO format')
+    last_access_time: Optional[str] = Field(
+        None, description='Last access timestamp in ISO format'
+    )
+    storage_descriptor: Dict[str, Any] = Field(
+        default_factory=dict, description='Storage descriptor information'
+    )
+    partition_keys: List[Dict[str, Any]] = Field(
+        default_factory=list, description='Partition key definitions'
+    )
+    operation: str = Field(default='get', description='Operation performed')
+
+
+class ListTablesData(BaseModel):
+    """Data model for list tables operation."""
+
+    database_name: str = Field(..., description='Name of the database')
+    tables: List[TableSummary] = Field(..., description='List of tables')
+    count: int = Field(..., description='Number of tables found')
+    operation: str = Field(default='list', description='Operation performed')
+
+
+class UpdateTableData(BaseModel):
+    """Data model for update table operation."""
+
+    database_name: str = Field(..., description='Name of the database containing the table')
+    table_name: str = Field(..., description='Name of the updated table')
+    operation: str = Field(default='update', description='Operation performed')
+
+
+class SearchTablesData(BaseModel):
+    """Data model for search tables operation."""
+
+    tables: List[TableSummary] = Field(..., description='List of matching tables')
+    search_text: str = Field(..., description='Search text used for matching')
+    count: int = Field(..., description='Number of tables found')
+    operation: str = Field(default='search', description='Operation performed')
+    next_token: Optional[str] = Field('', description='Token for pagination')
+
+
+# Connection Data Models
+class CreateConnectionData(BaseModel):
+    """Data model for create connection operation."""
+
+    connection_name: str = Field(..., description='Name of the created connection')
+    catalog_id: Optional[str] = Field(None, description='Catalog ID containing the connection')
+    operation: str = Field(default='create', description='Operation performed')
+
+
+class DeleteConnectionData(BaseModel):
+    """Data model for delete connection operation."""
+
+    connection_name: str = Field(..., description='Name of the deleted connection')
+    catalog_id: Optional[str] = Field(None, description='Catalog ID containing the connection')
+    operation: str = Field(default='delete', description='Operation performed')
+
+
+class GetConnectionData(BaseModel):
+    """Data model for get connection operation."""
+
+    connection_name: str = Field(..., description='Name of the connection')
+    connection_type: str = Field(..., description='Type of the connection')
+    connection_properties: Dict[str, str] = Field(
+        default_factory=dict, description='Connection properties'
+    )
+    physical_connection_requirements: Optional[Dict[str, Any]] = Field(
+        None, description='Physical connection requirements'
+    )
+    creation_time: Optional[str] = Field(None, description='Creation timestamp in ISO format')
+    last_updated_time: Optional[str] = Field(
+        None, description='Last update timestamp in ISO format'
+    )
+    last_updated_by: Optional[str] = Field(
+        None, description='The user, group, or role that last updated this connection'
+    )
+    status: Optional[str] = Field(
+        None, description='The status of the connection (READY, IN_PROGRESS, or FAILED)'
+    )
+    status_reason: Optional[str] = Field(None, description='The reason for the connection status')
+    last_connection_validation_time: Optional[str] = Field(
+        None, description='Timestamp of the last time this connection was validated'
+    )
+    catalog_id: Optional[str] = Field(None, description='Catalog ID containing the connection')
+    operation: str = Field(default='get', description='Operation performed')
+
+
+class ListConnectionsData(BaseModel):
+    """Data model for list connections operation."""
+
+    connections: List[ConnectionSummary] = Field(..., description='List of connections')
+    count: int = Field(..., description='Number of connections found')
+    catalog_id: Optional[str] = Field(None, description='Catalog ID used for listing')
+    next_token: Optional[str] = Field(None, description='Token for pagination')
+    operation: str = Field(default='list', description='Operation performed')
+
+
+class UpdateConnectionData(BaseModel):
+    """Data model for update connection operation."""
+
+    connection_name: str = Field(..., description='Name of the updated connection')
+    catalog_id: Optional[str] = Field(None, description='Catalog ID containing the connection')
+    operation: str = Field(default='update', description='Operation performed')
+
+
+class TestConnectionData(BaseModel):
+    """Data model for test connection operation."""
+
+    connection_name: Optional[str] = Field(None, description='Name of the tested connection')
+    catalog_id: Optional[str] = Field(None, description='Catalog ID containing the connection')
+    operation: str = Field(default='test-connection', description='Operation performed')
+
+
+class BatchDeleteConnectionData(BaseModel):
+    """Data model for batch delete connection operation."""
+
+    succeeded: List[str] = Field(
+        default_factory=list, description='Connections successfully deleted'
+    )
+    errors: Dict[str, Any] = Field(
+        default_factory=dict, description='Connections that failed to delete with error details'
+    )
+    catalog_id: Optional[str] = Field(None, description='Catalog ID containing the connections')
+    operation: str = Field(default='batch-delete-connection', description='Operation performed')
+
+
+class DescribeConnectionTypeData(BaseModel):
+    """Data model for describe connection type operation."""
+
+    connection_type: str = Field(..., description='Name of the connection type')
+    description: Optional[str] = Field(None, description='Description of the connection type')
+    capabilities: Optional[Dict[str, Any]] = Field(None, description='Supported capabilities')
+    connection_properties: Optional[Dict[str, Any]] = Field(
+        None, description='Common connection properties'
+    )
+    connection_options: Optional[Dict[str, Any]] = Field(
+        None, description='Connection options for Spark ETL'
+    )
+    authentication_configuration: Optional[Dict[str, Any]] = Field(
+        None, description='Authentication configuration'
+    )
+    compute_environment_configurations: Optional[Dict[str, Any]] = Field(
+        None, description='Supported compute environments'
+    )
+    physical_connection_requirements: Optional[Dict[str, Any]] = Field(
+        None, description='Physical connection requirements'
+    )
+    athena_connection_properties: Optional[Dict[str, Any]] = Field(
+        None, description='Athena-specific properties'
+    )
+    python_connection_properties: Optional[Dict[str, Any]] = Field(
+        None, description='Python-specific properties'
+    )
+    spark_connection_properties: Optional[Dict[str, Any]] = Field(
+        None, description='Spark-specific properties'
+    )
+    operation: str = Field(default='describe-connection-type', description='Operation performed')
+
+
+class ConnectionTypeBrief(BaseModel):
+    """Summary model for a connection type."""
+
+    connection_type: Optional[str] = Field(None, description='Name of the connection type')
+    display_name: Optional[str] = Field(None, description='Human-readable display name')
+    vendor: Optional[str] = Field(None, description='Vendor name')
+    description: Optional[str] = Field(None, description='Description of the connection type')
+
+
+class ListConnectionTypesData(BaseModel):
+    """Data model for list connection types operation."""
+
+    connection_types: List[ConnectionTypeBrief] = Field(
+        default_factory=list, description='List of connection types'
+    )
+    count: int = Field(0, description='Number of connection types returned')
+    next_token: Optional[str] = Field(None, description='Token for pagination')
+    operation: str = Field(default='list-connection-types', description='Operation performed')
+
+
+class EntitySummary(BaseModel):
+    """Summary model for a connection entity."""
+
+    entity_name: Optional[str] = Field(None, description='Name of the entity')
+    label: Optional[str] = Field(None, description='Label for the entity')
+    is_parent_entity: Optional[bool] = Field(None, description='Whether entity has sub-objects')
+    description: Optional[str] = Field(None, description='Description of the entity')
+    category: Optional[str] = Field(None, description='Category of the entity')
+
+
+class ListEntitiesData(BaseModel):
+    """Data model for list entities operation."""
+
+    entities: List[EntitySummary] = Field(default_factory=list, description='List of entities')
+    count: int = Field(0, description='Number of entities returned')
+    next_token: Optional[str] = Field(None, description='Token for pagination')
+    operation: str = Field(default='list-entities', description='Operation performed')
+
+
+class FieldSummary(BaseModel):
+    """Summary model for an entity field."""
+
+    field_name: Optional[str] = Field(None, description='Unique identifier for the field')
+    label: Optional[str] = Field(None, description='Readable label for the field')
+    description: Optional[str] = Field(None, description='Description of the field')
+    field_type: Optional[str] = Field(None, description='Data type of the field')
+    is_primary_key: Optional[bool] = Field(None, description='Whether field is a primary key')
+    is_nullable: Optional[bool] = Field(None, description='Whether field is nullable')
+    is_filterable: Optional[bool] = Field(None, description='Whether field can be used in filters')
+    is_partitionable: Optional[bool] = Field(
+        None, description='Whether field can be used for partitioning'
+    )
+    is_retrievable: Optional[bool] = Field(None, description='Whether field can be retrieved')
+    is_createable: Optional[bool] = Field(None, description='Whether field can be created')
+    is_updateable: Optional[bool] = Field(None, description='Whether field can be updated')
+    is_upsertable: Optional[bool] = Field(None, description='Whether field can be upserted')
+
+
+class DescribeEntityData(BaseModel):
+    """Data model for describe entity operation."""
+
+    fields: List[FieldSummary] = Field(default_factory=list, description='List of entity fields')
+    count: int = Field(0, description='Number of fields returned')
+    next_token: Optional[str] = Field(None, description='Token for pagination')
+    operation: str = Field(default='describe-entity', description='Operation performed')
+
+
+class GetEntityRecordsData(BaseModel):
+    """Data model for get entity records operation."""
+
+    records: List[Dict[str, Any]] = Field(
+        default_factory=list, description='List of entity records'
+    )
+    count: int = Field(0, description='Number of records returned')
+    next_token: Optional[str] = Field(None, description='Token for pagination')
+    operation: str = Field(default='get-entity-records', description='Operation performed')
+
+
+# Partition Data Models
+class CreatePartitionData(BaseModel):
+    """Data model for create partition operation."""
+
+    database_name: str = Field(..., description='Name of the database containing the table')
+    table_name: str = Field(..., description='Name of the table containing the partition')
+    partition_values: List[str] = Field(..., description='Values that define the partition')
+    operation: str = Field(default='create', description='Operation performed')
+
+
+class DeletePartitionData(BaseModel):
+    """Data model for delete partition operation."""
+
+    database_name: str = Field(..., description='Name of the database containing the table')
+    table_name: str = Field(..., description='Name of the table containing the partition')
+    partition_values: List[str] = Field(
+        ..., description='Values that defined the deleted partition'
+    )
+    operation: str = Field(default='delete', description='Operation performed')
+
+
+class GetPartitionData(BaseModel):
+    """Data model for get partition operation."""
+
+    database_name: str = Field(..., description='Name of the database containing the table')
+    table_name: str = Field(..., description='Name of the table containing the partition')
+    partition_values: List[str] = Field(..., description='Values that define the partition')
+    partition_definition: Dict[str, Any] = Field(..., description='Complete partition definition')
+    creation_time: Optional[str] = Field(None, description='Creation timestamp in ISO format')
+    last_access_time: Optional[str] = Field(
+        None, description='Last access timestamp in ISO format'
+    )
+    storage_descriptor: Dict[str, Any] = Field(
+        default_factory=dict, description='Storage descriptor information'
+    )
+    parameters: Dict[str, str] = Field(default_factory=dict, description='Partition parameters')
+    operation: str = Field(default='get', description='Operation performed')
+
+
+class ListPartitionsData(BaseModel):
+    """Data model for list partitions operation."""
+
+    database_name: str = Field(..., description='Name of the database containing the table')
+    table_name: str = Field(..., description='Name of the table')
+    partitions: List[PartitionSummary] = Field(..., description='List of partitions')
+    count: int = Field(..., description='Number of partitions found')
+    expression: Optional[str] = Field(None, description='Filter expression used')
+    next_token: Optional[str] = Field(None, description='Token for pagination')
+    operation: str = Field(default='list', description='Operation performed')
+
+
+class UpdatePartitionData(BaseModel):
+    """Data model for update partition operation."""
+
+    database_name: str = Field(..., description='Name of the database containing the table')
+    table_name: str = Field(..., description='Name of the table containing the partition')
+    partition_values: List[str] = Field(
+        ..., description='Values that define the updated partition'
+    )
+    operation: str = Field(default='update', description='Operation performed')
+
+
+# Catalog Data Models
+class CreateCatalogData(BaseModel):
+    """Data model for create catalog operation."""
+
+    catalog_id: str = Field(..., description='ID of the created catalog')
+    operation: str = Field(default='create', description='Operation performed')
+
+
+class DeleteCatalogData(BaseModel):
+    """Data model for delete catalog operation."""
+
+    catalog_id: str = Field(..., description='ID of the deleted catalog')
+    operation: str = Field(default='delete', description='Operation performed')
+
+
+class GetCatalogData(BaseModel):
+    """Data model for get catalog operation."""
+
+    catalog_id: str = Field(..., description='ID of the catalog')
+    catalog_definition: Dict[str, Any] = Field(..., description='Complete catalog definition')
+    name: Optional[str] = Field(None, description='Name of the catalog')
+    description: Optional[str] = Field(None, description='Description of the catalog')
+    parameters: Dict[str, str] = Field(default_factory=dict, description='Catalog parameters')
+    create_time: Optional[str] = Field(None, description='Creation timestamp in ISO format')
+    update_time: Optional[str] = Field(None, description='Last update timestamp in ISO format')
+    operation: str = Field(default='get', description='Operation performed')
+
+
+class ListCatalogsData(BaseModel):
+    """Data model for list catalogs operation."""
+
+    catalogs: List[CatalogSummary] = Field(..., description='List of catalogs')
+    count: int = Field(..., description='Number of catalogs found')
+    operation: str = Field(default='list', description='Operation performed')
+
+
+class ImportCatalogData(BaseModel):
+    """Data model for import catalog operation."""
+
+    catalog_id: str = Field(..., description='ID of the catalog being imported to')
+    operation: str = Field(default='import', description='Operation performed')
+
+
+# Additional utility models for complex operations
+class GlueJobRun(BaseModel):
+    """Model for a Glue job run status."""
+
+    job_run_id: str = Field(..., description='ID of the job run')
+    job_name: str = Field(..., description='Name of the Glue job')
+    job_run_state: str = Field(..., description='Current state of the job run')
+    started_on: Optional[str] = Field(None, description='Start timestamp in ISO format')
+    completed_on: Optional[str] = Field(None, description='Completion timestamp in ISO format')
+    execution_time: Optional[int] = Field(None, description='Execution time in seconds')
+    error_message: Optional[str] = Field(None, description='Error message if job failed')
+
+
+class BatchOperationResult(BaseModel):
+    """Result of a batch operation on multiple resources."""
+
+    total_requested: int = Field(..., description='Total number of operations requested')
+    successful: int = Field(..., description='Number of successful operations')
+    failed: int = Field(..., description='Number of failed operations')
+    errors: List[Dict[str, str]] = Field(
+        default_factory=list, description='List of errors encountered'
+    )
+
+
+class DataQualityResult(BaseModel):
+    """Result of data quality evaluation."""
+
+    result_id: str = Field(..., description='ID of the data quality result')
+    score: Optional[float] = Field(None, description='Overall data quality score')
+    started_on: Optional[str] = Field(None, description='Start timestamp in ISO format')
+    completed_on: Optional[str] = Field(None, description='Completion timestamp in ISO format')
+    rule_results: List[Dict[str, Any]] = Field(
+        default_factory=list, description='Individual rule results'
+    )
+
+
+class CrawlerRun(BaseModel):
+    """Model for a Glue crawler run."""
+
+    crawler_name: str = Field(..., description='Name of the crawler')
+    state: str = Field(..., description='Current state of the crawler')
+    start_time: Optional[str] = Field(None, description='Start timestamp in ISO format')
+    end_time: Optional[str] = Field(None, description='End timestamp in ISO format')
+    tables_created: int = Field(default=0, description='Number of tables created')
+    tables_updated: int = Field(default=0, description='Number of tables updated')
+    tables_deleted: int = Field(default=0, description='Number of tables deleted')
+
+
+# Extended data models for advanced operations
+class BatchCreateTablesData(BaseModel):
+    """Data model for batch create tables operation."""
+
+    database_name: str = Field(..., description='Name of the database')
+    batch_result: BatchOperationResult = Field(..., description='Batch operation results')
+    created_tables: List[str] = Field(..., description='List of successfully created table names')
+    operation: str = Field(default='batch_create', description='Operation performed')
+
+
+class BatchDeleteTablesData(BaseModel):
+    """Data model for batch delete tables operation."""
+
+    database_name: str = Field(..., description='Name of the database')
+    batch_result: BatchOperationResult = Field(..., description='Batch operation results')
+    deleted_tables: List[str] = Field(..., description='List of successfully deleted table names')
+    operation: str = Field(default='batch_delete', description='Operation performed')
+
+
+class TableSchemaComparisonData(BaseModel):
+    """Data model for table schema comparison operation."""
+
+    source_table: str = Field(..., description='Source table name')
+    target_table: str = Field(..., description='Target table name')
+    schemas_match: bool = Field(..., description='Whether schemas match exactly')
+    differences: List[Dict[str, Any]] = Field(
+        default_factory=list, description='List of schema differences'
+    )
+    operation: str = Field(default='compare_schema', description='Operation performed')
+
+
+class DataLineageData(BaseModel):
+    """Data model for data lineage tracking operation."""
+
+    table_name: str = Field(..., description='Name of the table')
+    database_name: str = Field(..., description='Name of the database')
+    upstream_tables: List[Dict[str, str]] = Field(
+        default_factory=list, description='Upstream data sources'
+    )
+    downstream_tables: List[Dict[str, str]] = Field(
+        default_factory=list, description='Downstream data consumers'
+    )
+    jobs_using_table: List[str] = Field(
+        default_factory=list, description='Glue jobs that use this table'
+    )
+    operation: str = Field(default='get_lineage', description='Operation performed')
+
+
+class PartitionProjectionData(BaseModel):
+    """Data model for partition projection configuration."""
+
+    database_name: str = Field(..., description='Name of the database')
+    table_name: str = Field(..., description='Name of the table')
+    projection_enabled: bool = Field(..., description='Whether partition projection is enabled')
+    projection_config: Dict[str, Any] = Field(
+        default_factory=dict, description='Partition projection configuration'
+    )
+    estimated_partitions: Optional[int] = Field(None, description='Estimated number of partitions')
+    operation: str = Field(default='configure_projection', description='Operation performed')
+
+
+class CatalogEncryptionData(BaseModel):
+    """Data model for catalog encryption configuration."""
+
+    catalog_id: str = Field(..., description='ID of the catalog')
+    encryption_at_rest: Dict[str, Any] = Field(
+        default_factory=dict, description='Encryption at rest configuration'
+    )
+    connection_password_encryption: Dict[str, Any] = Field(
+        default_factory=dict, description='Connection password encryption configuration'
+    )
+    operation: str = Field(default='configure_encryption', description='Operation performed')
+
+
+class ResourceLinkData(BaseModel):
+    """Data model for resource link operations."""
+
+    link_name: str = Field(..., description='Name of the resource link')
+    source_catalog_id: str = Field(..., description='Source catalog ID')
+    target_catalog_id: str = Field(..., description='Target catalog ID')
+    target_database: str = Field(..., description='Target database name')
+    operation: str = Field(default='create_link', description='Operation performed')

@@ -1,0 +1,56 @@
+---
+title: Repairs
+description: Hand Nimbus a task and it drives a machine's agent turn-by-turn until it's fixed, then opens a PR.
+---
+
+A **repair** is a supervised task. You describe what you want; Nimbus turns it into a brief, sends it to a machine's coding agent, and then **pairs with that agent turn-by-turn**, reading each reply and giving the next instruction, until the change is implemented, verified, and opened as a pull request.
+
+It's the same pipeline whether you start it from the **Repairs** tab or by asking Nimbus in chat.
+
+<img src="/screenshots/repairs.png" alt="The Repairs view, Nimbus's brief and the agent's work on a connected machine, with a ready PR" className="rounded-xl border border-border shadow-sm my-8 w-full" />
+
+## Start a repair
+
+<Tabs items={["From the Repairs tab", "From Nimbus chat"]}>
+  <Tab value="From the Repairs tab">
+    <Steps>
+      <Step title="Describe the issue">
+        What's broken or what to build, paste the error or failing logs if you have them.
+      </Step>
+      <Step title="Choose the machine">
+        Any online machine. Rented machines show their agent (e.g. `opencode (cloud)`).
+      </Step>
+      <Step title="Run repair">
+        Watch it stream live, then get the PR.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab value="From Nimbus chat">
+    Just ask Nimbus to fix or build something. It will list the connected machines, confirm which one to use, and dispatch the repair, then tell you it's running in the Repairs tab.
+  </Tab>
+</Tabs>
+
+## How Nimbus drives the agent
+
+<Info>
+Nimbus never edits files itself, the **agent on the machine** holds the ground truth in a local clone. Nimbus supervises it like a senior engineer over chat: after each reply it sends a concrete next instruction, asks for evidence (a diff, a grep), or ends the run.
+</Info>
+
+Each turn resolves to one of:
+
+- **A next instruction**, building on what the agent just reported
+- **A request for evidence**, "show the diff", "run the tests and paste the output"
+- **DONE**, the task is implemented and verified → finalize and open the PR
+- **STOP**, something's clearly going wrong → abort
+
+## Works on any machine
+
+Repairs work identically on a **connected computer** (Claude Code) and a **rented machine** (Claude Code or OpenCode). The driver prompt adapts to whichever agent the target runs.
+
+<Warning>
+The model picker in the Repairs tab only applies to local **Claude Code** computers. A rented machine always uses the model it was rented with.
+</Warning>
+
+## Watching it live
+
+The repair view streams the agent's **internal thinking and tool calls** as it works, followed by its reply each turn, the same professional streaming as the Nimbus chat. When the run finishes, the resulting pull request link appears in the task.

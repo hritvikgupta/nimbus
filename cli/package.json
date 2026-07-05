@@ -1,0 +1,16 @@
+{
+  "name": "@nimbus/cli",
+  "version": "0.1.0",
+  "description": "Nimbus worker — connect your machine so Nimbus can run incident repairs on it via your local Claude Code.",
+  "type": "module",
+  "bin": {
+    "nimbus": "./bin/nimbus.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "bin"
+  ],
+  "license": "MIT"
+}

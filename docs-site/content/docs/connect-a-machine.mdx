@@ -1,0 +1,37 @@
+---
+title: Connect a machine
+description: Bring a teammate's computer online as a Nimbus worker so its Claude Code can run your tasks.
+---
+
+Instead of renting, you can connect a real computer, yours or a teammate's, as a Nimbus worker. It runs the Claude Code installed on that machine, against a local clone of your repo.
+
+## Connect it
+
+<Steps>
+  <Step title="Open the connect flow">
+    Under **Computers** in the sidebar, click **+**.
+  </Step>
+  <Step title="Run the Nimbus CLI">
+    Run the provided connect command on the machine you want to bring online. It authenticates the machine to this project.
+  </Step>
+  <Step title="Wait for the green dot">
+    The machine appears under **Computers** and turns green when it's online. It stays online as long as the CLI is running and polling.
+  </Step>
+</Steps>
+
+<Info>
+Connected machines are shared across everyone in the project, any member can chat with them or dispatch a repair to them.
+</Info>
+
+## Using it
+
+- **Chat directly**, click the machine to talk to its Claude Code, which works in a local clone you can't see. It holds the ground truth about the files.
+- **Dispatch a repair**, send it a supervised task from the [Repairs](/docs/repairs) tab or from Nimbus chat.
+
+## Removing it
+
+Hover the machine in the sidebar and click the **✕** to remove it from the roster. If its CLI keeps polling, it will reappear on the next poll, so stop the CLI on the machine to keep it off.
+
+<Note>
+Connected computers run **Claude Code**. Rented machines can run Claude Code or OpenCode, see [Agents & models](/docs/agents-and-models).
+</Note>

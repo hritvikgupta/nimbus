@@ -1,0 +1,168 @@
+name: 💞 Support Awslabs MCP Servers (become a reference)
+description: Add your organization's name or logo to the Awslabs MCP Servers documentation
+title: "[Support Awslabs MCP Servers]: <your organization name>"
+labels: ["customer-reference"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for becoming a reference customer. Your support means a lot to us. It also helps new customers to know who's using it.
+
+        If you would like us to also display your organization's logo, please share a link in the `Company logo` field.
+  - type: input
+    id: organization
+    attributes:
+      label: Organization Name
+      description: Please share the name of your organization
+      placeholder: ACME
+    validations:
+      required: true
+  - type: input
+    id: name
+    attributes:
+      label: Your Name
+      description: Please share your name
+    validations:
+      required: true
+  - type: input
+    id: job
+    attributes:
+      label: Your current position
+      description: Please share your current position at your company
+    validations:
+      required: true
+  - type: input
+    id: logo
+    attributes:
+      label: (Optional) Company logo
+      description: Company logo you want us to display. You also allow us to resize for optimal placement in the documentation.
+    validations:
+      required: false
+  - type: textarea
+    id: use_case
+    attributes:
+      label: (Optional) Use case
+      description: How are you using Awslabs MCP Servers today? *features, etc.*
+    validations:
+      required: false
+  - type: checkboxes
+    id: languages
+    attributes:
+      label: What servers are you using from Awslabs MCP Servers?
+      options:
+        - label: amazon-bedrock-agentcore-mcp-server
+          required: false
+        - label: amazon-kendra-index-mcp-server
+          required: false
+        - label: amazon-keyspaces-mcp-server
+          required: false
+        - label: amazon-mq-mcp-server
+          required: false
+        - label: amazon-neptune-mcp-server
+          required: false
+        - label: amazon-qbusiness-anonymous-mcp-server
+          required: false
+        - label: amazon-qindex-mcp-server
+          required: false
+        - label: amazon-sns-sqs-mcp-server
+          required: false
+        - label: aurora-dsql-mcp-server
+          required: false
+        - label: aws-api-mcp-server
+          required: false
+        - label: aws-appsync-mcp-server
+          required: false
+        - label: aws-bedrock-custom-model-import-mcp-server
+          required: false
+        - label: aws-dataprocessing-mcp-server
+          required: false
+        - label: aws-documentation-mcp-server
+          required: false
+        - label: aws-healthomics-mcp-server
+          required: false
+        - label: aws-iac-mcp-server
+          required: false
+        - label: aws-iot-sitewise-mcp-server
+          required: false
+        - label: aws-knowledge-mcp-server
+          required: false
+        - label: aws-location-mcp-server
+          required: false
+        - label: aws-network-mcp-server
+          required: false
+        - label: aws-pricing-mcp-server
+          required: false
+        - label: aws-serverless-mcp-server
+          required: false
+        - label: aws-support-mcp-server
+          required: false
+        - label: bedrock-kb-retrieval-mcp-server
+          required: false
+        - label: billing-cost-management-mcp-server
+          required: false
+        - label: ccapi-mcp-server
+          required: false
+        - label: cloudtrail-mcp-server
+          required: false
+        - label: cloudwatch-applicationsignals-mcp-server
+          required: false
+        - label: cloudwatch-mcp-server
+          required: false
+        - label: document-loader-mcp-server
+          required: false
+        - label: documentdb-mcp-server
+          required: false
+        - label: dynamodb-mcp-server
+          required: false
+        - label: ecs-mcp-server
+          required: false
+        - label: eks-mcp-server
+          required: false
+        - label: elasticache-mcp-server
+          required: false
+        - label: finch-mcp-server
+          required: false
+        - label: healthimaging-mcp-server
+          required: false
+        - label: healthlake-mcp-server
+          required: false
+        - label: iam-mcp-server
+          required: false
+        - label: lambda-tool-mcp-server
+          required: false
+        - label: mcp-lambda-handler
+          required: false
+        - label: memcached-mcp-server
+          required: false
+        - label: mysql-mcp-server
+          required: false
+        - label: openapi-mcp-server
+          required: false
+        - label: postgres-mcp-server
+          required: false
+        - label: prometheus-mcp-server
+          required: false
+        - label: redshift-mcp-server
+          required: false
+        - label: s3-tables-mcp-server
+          required: false
+        - label: sagemaker-ai-mcp-server
+          required: false
+        - label: sagemaker-unified-studio-spark-troubleshooting-mcp-server
+          required: false
+        - label: sagemaker-unified-studio-spark-upgrade-mcp-server
+          required: false
+        - label: stepfunctions-tool-mcp-server
+          required: false
+        - label: timestream-for-influxdb-mcp-server
+          required: false
+        - label: valkey-mcp-server
+          required: false
+        - label: well-architected-security-mcp-server
+          required: false
+  - type: markdown
+    attributes:
+      value: |
+        *By raising a Support Awslabs MCP Servers issue, you are granting AWS permission to use your company's name (and/or logo) for the limited purpose described here. You are also confirming that you have authority to grant such permission.*
+
+        *You can opt-out at any time by commenting or reopening this issue.*

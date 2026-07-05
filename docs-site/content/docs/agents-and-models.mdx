@@ -1,0 +1,58 @@
+---
+title: Agents & models
+description: Claude Code vs OpenCode, how each authenticates and how to pick a model.
+---
+
+A machine runs one **coding agent** (the CLI) on one **model**. Nimbus supports two agents, and they authenticate in fundamentally different ways.
+
+## The agents
+
+<CardGroup cols={2}>
+  <Card title="Claude Code" icon="gear">
+    Anthropic's CLI. Authenticates against your **Claude subscription** via OAuth, no API key. Runs on Claude models (Opus / Sonnet / Haiku).
+  </Card>
+  <Card title="OpenCode" icon="code">
+    Open-source CLI. Uses an **OpenRouter API key**, one key, many providers. Runs DeepSeek, GLM, and Kimi models.
+  </Card>
+</CardGroup>
+
+## Authentication at a glance
+
+| Agent | Credential | Injected as |
+|-------|-----------|-------------|
+| Claude Code | Claude subscription (OAuth, one-time sign-in) | `CLAUDE_CODE_OAUTH_TOKEN` |
+| OpenCode | OpenRouter API key (`sk-or-…`) | `OPENROUTER_API_KEY` |
+
+<Info>
+Claude Code deliberately runs on a **subscription token**, not an Anthropic API key, so agent usage counts against your plan instead of generating per-token API charges.
+</Info>
+
+## Picking a model
+
+The model is chosen **at rent time** and fixed for the machine's lifetime.
+
+<Tabs items={["Claude Code", "OpenCode"]}>
+  <Tab value="Claude Code">
+    Claude Code selects its model by alias, gated by your subscription tier:
+
+    - **Default · Sonnet**, the account default, balanced
+    - **Opus**, most capable
+    - **Sonnet**, balanced
+    - **Haiku**, fastest
+
+    Nimbus passes this as `--model` on every turn.
+  </Tab>
+  <Tab value="OpenCode">
+    OpenCode runs through OpenRouter. Nimbus offers the **DeepSeek**, **GLM**, and **Kimi** model families. Whatever you pick is stored with the machine and passed as `-m openrouter/<model>` on every turn.
+  </Tab>
+</Tabs>
+
+<Warning>
+A rented machine's model is fixed when you rent it. If you dispatch a Nimbus repair to a rented machine, it uses that rent-time model, the repair's model picker only applies to local Claude Code computers.
+</Warning>
+
+## Which should I use?
+
+<Note>
+Use **Claude Code** if you already have a Claude subscription and want top-tier coding quality with no extra billing. Use **OpenCode** if you want to run open models (DeepSeek / GLM / Kimi) and pay per-use through OpenRouter.
+</Note>

@@ -1,0 +1,62 @@
+---
+title: Chatting with Nimbus
+description: The main way you work, ask in plain language and Nimbus operates your cloud, showing its thinking and tool calls live.
+---
+
+Chat is where you drive Nimbus. You ask in plain language; Nimbus decides which cloud tools to use, shows its reasoning and each tool call live, and returns an answer, often having read real inventory, telemetry, logs, or cost along the way.
+
+## What you can ask
+
+<CardGroup cols={2}>
+  <Card title="Inspect" icon="terminal">
+    "What's running?", "show me my RDS instances", "what's in us-east-1?"
+  </Card>
+  <Card title="Diagnose" icon="play">
+    "Why is the API slow?", "what's degraded?", "why did service X error?"
+  </Card>
+  <Card title="Cost" icon="book">
+    "What am I spending this month?", "estimate the cost of this stack"
+  </Card>
+  <Card title="Design & deploy" icon="cloud">
+    "Design a 3-tier app", "add a Redis cache", "deploy the canvas"
+  </Card>
+  <Card title="Databases" icon="gear">
+    "Create a users table in Supabase", "run this query on Neon"
+  </Card>
+  <Card title="Code" icon="code">
+    "Analyze this repo", "fix the login bug and open a PR"
+  </Card>
+</CardGroup>
+
+## The diagnose workflow
+
+When you ask why something is broken or slow, Nimbus follows a consistent path:
+
+<Steps>
+  <Step title="Read telemetry">
+    Pulls live metrics (CPU, traffic, latency, errors, connections) for the resource.
+  </Step>
+  <Step title="Classify">
+    Decides what kind of problem it is from the signals.
+  </Step>
+  <Step title="Read logs">
+    Tails CloudWatch / Cloud Logging to find the actual errors.
+  </Step>
+  <Step title="Root cause + fix">
+    Explains the cause and proposes a fix, applying it only after you confirm.
+  </Step>
+</Steps>
+
+## Safety: confirm before changes
+
+<Warning>
+For anything **billable or destructive**, Nimbus shows a plan and an estimated cost and waits for your explicit approval before acting. Read-only questions (inventory, telemetry, logs, cost) run without confirmation.
+</Warning>
+
+## Watching it work
+
+As Nimbus works, the chat streams its **internal reasoning** and each **tool call** (for example, running an AWS CLI command or reading logs) as a live timeline, followed by its written answer. Results also flow into the [Canvas](/docs/canvas), [Resources & Cost](/docs/resources-and-cost), and Overview, so the whole app reflects what just happened.
+
+## Design vs Agent mode
+
+The chat runs in **design** mode (Canvas-only, no real cloud) or **agent** mode (operates your real cloud). The Canvas view uses design mode for sketching; say "deploy" to switch to agent mode and provision for real. See [How Nimbus works](/docs/how-nimbus-works).

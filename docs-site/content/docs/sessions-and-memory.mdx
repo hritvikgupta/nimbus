@@ -1,0 +1,42 @@
+---
+title: Sessions & memory
+description: How a machine remembers its work across turns and how you resume a session on a fresh machine.
+---
+
+Nimbus keeps a lightweight, portable memory for each machine's work so context survives turns, teardown, and even a brand-new machine.
+
+The **Sessions** board gives you an at-a-glance view of every task across your machines, what's running, what's waiting for review (with a ready PR), and what's done.
+
+<img src="/screenshots/sessions.png" alt="The Sessions board, tasks grouped into Running, Waiting for review, and Done" className="rounded-xl border border-border shadow-sm my-8 w-full" />
+
+## The running summary
+
+Each machine keeps a **running work-summary** file. Nimbus never injects the summary's content into a prompt, it gives the agent the **file path**. On a fresh session the agent reads it for continuity; after each turn it appends what it did. That file is the cross-session memory of "what was done last."
+
+<Info>
+The summary lives inside the machine's working copy so the agent (which sandboxes file access to the project directory) can always read and update it.
+</Info>
+
+## Saved off the machine
+
+Because a rented machine is disposable, Nimbus syncs that summary back to your account after each turn and before teardown. So when a machine stops or expires, its progress isn't lost.
+
+## Resuming on a new machine
+
+When you rent a new machine, the modal offers to **resume a saved session**. Pick one, and Nimbus seeds the summary onto the new machine before it goes green, the agent starts already knowing what happened before.
+
+<Steps>
+  <Step title="Rent a new machine">
+    Open the Rent a machine modal.
+  </Step>
+  <Step title="Choose “Resume a session”">
+    Select a saved summary from this project.
+  </Step>
+  <Step title="Start where you left off">
+    The new machine boots with that context seeded, no need to re-explain prior work.
+  </Step>
+</Steps>
+
+<Note>
+Direct machine chats also keep a per-machine session history, use **History** in the machine view to reopen and resume a past conversation.
+</Note>

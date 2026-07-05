@@ -1,0 +1,24 @@
+{
+  "title": "Documentation",
+  "pages": [
+    "index",
+    "quickstart",
+    "---Core concepts---",
+    "how-nimbus-works",
+    "connect-your-cloud",
+    "---Managing your cloud---",
+    "chatting-with-nimbus",
+    "canvas",
+    "resources-and-cost",
+    "examples",
+    "---Code & machines---",
+    "repairs",
+    "rent-a-machine",
+    "connect-a-machine",
+    "agents-and-models",
+    "sessions-and-memory",
+    "---Reference---",
+    "agent-capabilities",
+    "concepts"
+  ]
+}

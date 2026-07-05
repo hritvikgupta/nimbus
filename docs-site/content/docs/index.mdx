@@ -1,0 +1,71 @@
+---
+title: What is Nimbus
+description: Nimbus is a cloud engineer agent, it manages your AWS and GCP cloud through chat, from designing and deploying infrastructure to diagnosing incidents, tracking spend, and shipping code fixes.
+---
+
+**Nimbus is a cloud engineer agent.** You connect your clouds, **AWS** and **GCP** (plus databases like Supabase and Neon, and GitHub), and then you just *talk to it*. Nimbus discovers what's running, designs and deploys infrastructure, watches metrics and logs, diagnoses what's broken, tracks your spend, and can even drive a coding agent to fix your app and open a pull request.
+
+It's the whole cloud control plane in one conversation, scoped to a **project** (each project connects its own clouds and repo).
+
+<CardGroup cols={2}>
+  <Card title="How Nimbus works" icon="gear" href="/docs/how-nimbus-works">
+    The agent, its two modes, and the cloud-control protocol it follows.
+  </Card>
+  <Card title="Connect your cloud" icon="plug" href="/docs/connect-your-cloud">
+    Grant scoped access to AWS, GCP, Supabase, Neon, and GitHub.
+  </Card>
+  <Card title="The Canvas" icon="cloud" href="/docs/canvas">
+    A live architecture diagram of your cloud that the agent draws and deploys.
+  </Card>
+  <Card title="Chatting with Nimbus" icon="message" href="/docs/chatting-with-nimbus">
+    What to ask, list, design, deploy, diagnose, cost, and more.
+  </Card>
+</CardGroup>
+
+## What Nimbus does
+
+<CardGroup cols={2}>
+  <Card title="Operate your cloud" icon="terminal">
+    List and inspect real resources across AWS + GCP, run any AWS CLI / gcloud command, manage databases, through chat, safely.
+  </Card>
+  <Card title="Design & deploy" icon="cloud">
+    Draw an architecture on the Canvas, then say "deploy", Nimbus provisions the real resources in dependency order.
+  </Card>
+  <Card title="Diagnose incidents" icon="play">
+    Reads live telemetry and logs, classifies what's wrong, finds the root cause, and proposes (or applies) a fix.
+  </Card>
+  <Card title="Track spend" icon="book">
+    Real month-to-date cost from AWS Cost Explorer and GCP billing, broken down by service.
+  </Card>
+  <Card title="Understand your repo" icon="code">
+    Clones and analyzes a repo to design matching infrastructure, grounded in what the code actually uses.
+  </Card>
+  <Card title="Ship code fixes" icon="terminal">
+    Dispatches a coding agent on a machine to make a fix or feature and open a PR, Nimbus supervises it turn by turn.
+  </Card>
+</CardGroup>
+
+## The big idea
+
+<Steps>
+  <Step title="Connect a cloud">
+    Give Nimbus scoped access to AWS and/or GCP (and optionally databases + GitHub). Access is per-user and never leaves your account's boundary.
+  </Step>
+  <Step title="Ask in plain language">
+    "What's running?", "why is the API slow?", "design a 3-tier app", "what am I spending?", "deploy this."
+  </Step>
+  <Step title="Nimbus acts safely">
+    It discovers before guessing, reads before writing, and **always confirms with a plan + cost estimate before changing anything billable**.
+  </Step>
+  <Step title="See it everywhere">
+    Results show up live across the Canvas, Resources, Cost, and Overview, not just in chat.
+  </Step>
+</Steps>
+
+<Note>
+Nimbus operates on **real** cloud accounts. Before you connect a cloud it runs in a demo mode so you can see how the conversation works; connecting AWS or GCP unlocks live operations.
+</Note>
+
+<Info>
+**Azure** is on the roadmap, the connector is listed but not yet available.
+</Info>

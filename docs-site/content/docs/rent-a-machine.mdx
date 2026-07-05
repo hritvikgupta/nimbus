@@ -1,0 +1,73 @@
+---
+title: Rent a machine
+description: Spin up a hosted Nimbus Cloud machine on demand, it boots fully provisioned and ready to chat.
+---
+
+When no teammate machine is online (or you just want a clean, disposable environment), rent a hosted **Nimbus Cloud** machine. It boots fully provisioned: it installs your chosen coding agent, clones your project's repo, and only turns green once it's ready to chat.
+
+Open the **+** next to **Rent a machine** in the sidebar to start.
+
+<img src="/screenshots/rent-a-machine.png" alt="The Rent a machine dialog, size, duration, coding agent, model, and sign-in" className="rounded-xl border border-border shadow-sm my-8 w-full" />
+
+## What you choose
+
+<Steps>
+  <Step title="Machine size">
+    Pick from live sizes (vCPU + RAM). Larger machines cost more per hour; the price shown is the price you pay.
+  </Step>
+  <Step title="Rental duration">
+    1 hour, 6 hours, 1 day, 3 days, 1 week, or **until you stop it** (billed hourly). The machine auto-tears-down at expiry, and the clock starts when the machine is ready, not while it's booting.
+  </Step>
+  <Step title="Coding agent">
+    **Claude Code** or **OpenCode**. This is the CLI that runs on the machine.
+  </Step>
+  <Step title="Model">
+    Chosen up front and fixed for the machine's lifetime. (See [Agents & models](/docs/agents-and-models).)
+  </Step>
+  <Step title="Credential">
+    How the machine authenticates, depends on the agent (below).
+  </Step>
+</Steps>
+
+## Authentication
+
+Claude Code and OpenCode authenticate very differently, Nimbus asks for the right thing per agent.
+
+<Tabs items={["Claude Code", "OpenCode"]}>
+  <Tab value="Claude Code">
+    Claude Code signs in against your **Claude subscription** via OAuth, there's **no API key**.
+
+    <Steps>
+      <Step title="Click “Sign in to Claude Code”">
+        A new tab opens on claude.ai.
+      </Step>
+      <Step title="Approve">
+        Sign in with your Claude subscription (Pro / Max / Team / Enterprise) and approve access.
+      </Step>
+      <Step title="Paste the code">
+        claude.ai shows a one-time code, paste it back into the modal and click **Verify code**.
+      </Step>
+    </Steps>
+
+    Nimbus exchanges that code for a token and injects it on the machine as `CLAUDE_CODE_OAUTH_TOKEN`. Usage counts against your subscription, no per-token API charges.
+  </Tab>
+  <Tab value="OpenCode">
+    OpenCode uses an **OpenRouter API key** (one key, every model). Paste your `sk-or-…` key into the modal. It's injected on the machine as `OPENROUTER_API_KEY` only to run the agent, and cleared from the record after the machine boots.
+  </Tab>
+</Tabs>
+
+<Warning>
+Your credential is injected into the machine solely to run the agent and is not stored after boot. Treat the machine as disposable, it's torn down at expiry or when you stop it.
+</Warning>
+
+## Resuming a past session
+
+If you've worked on this project before, the modal lets you **resume a saved session**, Nimbus seeds the machine with that session's running summary so the agent picks up where it left off. See [Sessions & memory](/docs/sessions-and-memory).
+
+## Lifecycle
+
+<Info>
+**provisioning → booting → running → stopped/expired.** A machine only reaches **running** (green) once the agent is installed and the repo is cloned. Stopping it (the ✕ in the sidebar) destroys the machine and meters the final cost; reaching the duration limit does the same automatically.
+</Info>
+
+A rented machine behaves exactly like a connected computer: it shows in the sidebar, you can chat with its agent directly, and Nimbus can dispatch a [repair](/docs/repairs) to it.

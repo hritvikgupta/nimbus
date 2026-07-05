@@ -1,0 +1,545 @@
+/* =======================================================================
+   Nimbus workspace — LIGHT "living system" two-panel shell.
+   Scoped to .ws so /login and the landing keep their dark look.
+   We re-declare the shared component tokens (--accent, --text, --panel…)
+   in the light palette here, so the existing component CSS (cards, tables,
+   chat, drawer) renders light inside the app with no per-component edits.
+   ======================================================================= */
+.ws {
+  /* reference palette — flat neutral (aligned with scrape-leads / "relay"):
+     #fafafa bg, #ffffff paper, #e7e7e7 lines, #0a0a0a ink, ink-as-accent. */
+  --bg: #fafafa;
+  --panel: #ffffff;
+  --card: #ffffff;
+  --border: #e7e7e7;
+  --border-soft: #f0f0f0;
+  --text: #0a0a0a;
+  --muted: #6e6e6e;
+  --muted-2: #a8a8a8;
+  --accent: #0a0a0a;            /* primary actions use ink, like the landing */
+  --accent-strong: #1a1a1a;
+  --accent-soft: #f0f0f0;
+  --warn-bg: #fef3c7; --warn-text: #b45309;
+  --c-green:#15803d; --c-orange:#b45309; --c-red:#b91c1c; --c-blue:#2563eb;
+  --c-purple:#6d28d9; --c-teal:#0f766e; --c-slate:#6e6e6e;
+  --radius: 12px;
+
+  /* remap legacy component tokens onto the light palette */
+  --bg-2: var(--panel);
+  --panel-2: #f5f5f5;
+  --light: var(--accent);      /* primary buttons = ink (black) */
+  --light-ink: #fafafa;
+  --green: var(--c-green);
+  --amber: var(--c-orange);
+  --red: var(--c-red);
+  --aws: var(--c-slate); --gcp: var(--c-orange); --azure: var(--c-blue);
+  --shadow: 0 1px 0 #efefef, 0 6px 24px -10px rgba(15,23,42,.10);
+
+  /* ── UNIFIED TYPOGRAPHY ──────────────────────────────────────────────
+     Hanken Grotesk for ~everything (body, labels, headings, tables, KPIs,
+     chat). JetBrains Mono for machine values. Playfair Display serif only
+     for the hero H1 + the CloudMap center node name. */
+  --font-sans: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  font-feature-settings: "ss01";
+
+  /* small, consistent type scale */
+  --fs-hero: 30px;       /* serif hero H1 */
+  --fs-title: 14px;      /* section titles (sans 600) */
+  --fs-label: 12px;      /* card / KPI labels (muted) */
+  --fs-kpi: 22px;        /* KPI numbers (sans 600) */
+  --fs-body: 13px;       /* body text */
+  --fs-cell: 12.5px;     /* table cells */
+  --fs-mono: 12px;       /* mono machine values */
+  --fs-eyebrow: 11px;    /* eyebrow / tab / pill mono (uppercase, tracked) */
+
+  display: grid;
+  grid-template-columns: 64fr 36fr;
+  height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  overflow: hidden;
+}
+
+/* ───────────────────────── LEFT (canvas) ───────────────────────── */
+.ws-left { display: flex; flex-direction: column; min-width: 0; padding: 22px 26px 0; }
+
+.ws-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.ws-top-left { display: flex; align-items: center; gap: 13px; min-width: 0; }
+.ws-wsbtn { position: relative; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  color: var(--muted); padding: 4px 6px; border-radius: 9px; }
+.ws-wsbtn:hover { background: rgba(0,0,0,.03); }
+.ws-ws-av { width: 26px; height: 26px; border-radius: 7px; background: var(--text); color: #fff;
+  display: grid; place-items: center; font-size: 11px; font-weight: 700; font-family: var(--font-mono); }
+.ws-proj-title { font-family: var(--font-sans); font-size: var(--fs-title); font-weight: 600; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -.01em; }
+
+.ws-proj-menu { position: absolute; top: calc(100% + 6px); left: 0; width: 220px; z-index: 60;
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 6px;
+  box-shadow: 0 18px 44px -16px rgba(26,25,22,.28); }
+.ws-proj-lbl { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; color: var(--muted-2);
+  padding: 6px 9px 5px; }
+.ws-proj-row { display: flex; align-items: center; gap: 9px; padding: 8px 9px; border-radius: 8px; cursor: pointer; }
+.ws-proj-row:hover { background: var(--panel-2); }
+.ws-proj-row.on { background: var(--accent-soft); }
+.ws-proj-av { width: 22px; height: 22px; border-radius: 6px; background: var(--panel-2); display: grid; place-items: center;
+  font-size: 11px; font-weight: 700; color: var(--text); flex: none; }
+.ws-proj-nm { font-size: var(--fs-body); color: var(--text); flex: 1; }
+.ws-proj-row .ws-proj-nm.mono { font-family: var(--font-mono); font-size: var(--fs-mono); }
+.ws-proj-empty { padding: 9px; font-size: var(--fs-body); color: var(--muted); }
+.ws-proj-empty a { color: var(--accent); }
+.ws-proj-ck { color: var(--accent); font-size: 12px; }
+
+.ws-top-right { display: flex; align-items: center; gap: 10px; flex: none; }
+.ws-status-pill { display: inline-flex; align-items: center; gap: 7px; font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--card);
+  border: 1px solid var(--border); border-radius: 9px; padding: 9px 14px; }
+.ws-status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c-green);
+  box-shadow: 0 0 0 3px rgba(58,165,93,.16); }
+/* primary button → rounded-rect uppercase-mono pill (matches the reference "UPGRADE" / "+ NEW TASK") */
+.ws-new-btn { background: var(--accent); color: #fff; border: none; border-radius: 9px;
+  padding: 9px 16px; font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em;
+  text-transform: uppercase; font-weight: 600; cursor: pointer;
+  box-shadow: 0 2px 8px -3px rgba(15,23,42,.18); }
+.ws-new-btn:hover { background: var(--accent-strong); }
+
+.ws-canvas-head { padding: 26px 0 14px; }
+.ws-eyebrow { font-family: var(--font-mono); font-size: var(--fs-eyebrow); letter-spacing: .14em; color: var(--muted-2); text-transform: uppercase; }
+.ws-h1 { font-family: var(--font-serif); font-size: var(--fs-hero); line-height: 1.1; font-weight: 500;
+  letter-spacing: -.02em; color: var(--text); margin-top: 10px; max-width: 14ch; }
+
+.ws-canvas-wrap { flex: 1; min-height: 0; position: relative; margin-top: 16px; }
+
+/* proper resource node card (cloud tag · type · name · region) */
+.cm-node { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 11px 13px; min-width: 196px; max-width: 280px; box-shadow: 0 8px 22px -12px rgba(26,25,22,.28); }
+.cm-node-head { display: flex; align-items: center; gap: 10px; }
+.cm-node-ico { width: 30px; height: 30px; border-radius: 8px; flex: none; display: grid; place-items: center;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,.04); }
+.cm-node-name { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: var(--text); letter-spacing: -.01em;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cm-node-status { flex: none; display: inline-flex; align-items: center; gap: 5px; font-family: var(--font-sans);
+  font-size: 9.5px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase;
+  padding: 2px 7px 2px 6px; border-radius: 999px; border: 1px solid var(--border); }
+.cm-node-status .cm-st-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; flex: none; }
+.cm-node-status.planned { color: #9a7b33; background: #fcf6e8; border-color: #ecdcb0; }
+.cm-node-status.live { color: #2f7d52; background: #eaf6ef; border-color: #bfe3cd; }
+.cm-node-status.stopped { color: #8a8a8a; background: #f3f3f3; border-color: #e0e0e0; }
+/* dim a stopped resource's whole card so it reads as inactive */
+.cm-node.stopped { opacity: .72; }
+.cm-node-sub { margin-top: 8px; padding-left: 40px; font-family: var(--font-sans); font-size: 11px;
+  color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* the agent's chosen config, shown as compact chips under the meta line */
+.cm-node-spec { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; padding-left: 40px; }
+.cm-chip { font-family: var(--font-mono); font-size: 9.5px; color: var(--text); background: var(--panel-2);
+  border: 1px solid var(--border-soft); border-radius: 5px; padding: 1px 6px; white-space: nowrap;
+  display: inline-flex; align-items: baseline; gap: 5px; max-width: 200px; }
+.cm-chip-k { color: var(--muted); flex: none; }
+.cm-chip-v { overflow: hidden; text-overflow: ellipsis; }
+/* planned (designed, not-yet-deployed) node — same clean card, a faint tint; the status chip carries the state */
+.cm-node.planned { background: #ffffff; box-shadow: 0 8px 22px -13px rgba(15,23,42,.14); }
+
+/* new-project modal */
+.ws-modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(26,25,22,.32);
+  display: grid; place-items: center; backdrop-filter: blur(2px); }
+.ws-modal { width: 360px; background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  padding: 22px; box-shadow: 0 30px 70px -20px rgba(26,25,22,.4); }
+.ws-modal-title { font-size: 16px; font-weight: 600; color: var(--text); }
+.ws-modal-sub { font-size: 12.5px; color: var(--muted); margin: 4px 0 16px; }
+.ws-modal-input { width: 100%; box-sizing: border-box; padding: 10px 12px; font-size: 13.5px; font-family: inherit;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 9px; color: var(--text); outline: none; }
+.ws-modal-input:focus { border-color: var(--accent); }
+.ws-modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.ws-modal-btn { padding: 8px 15px; border-radius: 999px; font-size: 12.5px; font-weight: 600; cursor: pointer;
+  font-family: inherit; border: 1px solid transparent; }
+.ws-modal-btn.ghost { background: transparent; border-color: var(--border); color: var(--muted); }
+.ws-modal-btn.ghost:hover { color: var(--text); background: var(--panel-2); }
+.ws-modal-btn.primary { background: var(--accent); color: #fff; }
+.ws-modal-btn.primary:disabled { opacity: .5; cursor: not-allowed; }
+.ws-modal-btn.primary:not(:disabled):hover { background: var(--accent-strong); }
+.ws-statusbar { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .1em; color: var(--muted-2);
+  padding: 14px 0 16px; }
+
+/* ── ReactFlow cloud map ── */
+.cm-canvas { position: absolute; inset: 0; }
+.cm-canvas .react-flow__renderer,
+.cm-canvas .react-flow { background: transparent; } /* no bg — clean canvas */
+.cm-canvas .react-flow__edge.selected .react-flow__edge-path { stroke: var(--accent); }
+
+/* connection handles — subtle dots, clearer on node hover */
+.cm-h { width: 8px; height: 8px; background: #fff; border: 1.5px solid var(--muted-2);
+  opacity: .55; transition: opacity .12s, border-color .12s; }
+.cm-node:hover .cm-h { opacity: 1; border-color: var(--accent); }
+.cm-h.react-flow__handle-connecting { background: var(--accent); border-color: var(--accent); }
+
+/* zoom controls — light theme */
+.cm-canvas .react-flow__controls { box-shadow: 0 4px 14px -8px rgba(26,25,22,.3); border-radius: 9px; overflow: hidden; }
+.cm-canvas .react-flow__controls-button { background: var(--card); border-bottom: 1px solid var(--border-soft); color: var(--text); }
+.cm-canvas .react-flow__controls-button:hover { background: var(--panel-2); }
+.cm-canvas .react-flow__controls-button svg { fill: var(--muted); }
+
+.cm-orb { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px 26px;
+  box-shadow: 0 12px 34px -14px rgba(26,25,22,.22); text-align: center; }
+.cm-orb-glow { position: absolute; inset: -28px; border-radius: 50%; z-index: -1;
+  background: radial-gradient(circle, rgba(15,23,42,.10), transparent 68%); }
+.cm-orb-name { font-family: var(--font-serif); font-size: 18px; font-weight: 500; color: var(--text); letter-spacing: -.01em; }
+.cm-orb-live { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .14em; color: var(--c-green);
+  display: inline-flex; align-items: center; gap: 5px; }
+.cm-live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-green); box-shadow: 0 0 0 3px rgba(58,165,93,.18); }
+
+.cm-pill { display: flex; align-items: center; gap: 9px; background: var(--card); border: 1px solid var(--border);
+  border-radius: 11px; padding: 8px 13px; box-shadow: 0 4px 14px -8px rgba(26,25,22,.2); min-width: 120px; max-width: 200px; }
+.cm-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.cm-pill-text { min-width: 0; }
+.cm-pill-name { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .06em; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cm-pill-type { font-size: 10px; color: var(--muted-2); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cm-handle { opacity: 0; width: 1px; height: 1px; border: none; min-width: 0; min-height: 0; }
+
+.cm-empty-hint { position: absolute; top: 50%; left: 50%; transform: translate(-50%, 78px);
+  font-size: 12.5px; color: var(--muted-2); text-align: center; pointer-events: none; max-width: 240px; }
+
+/* ───────────────────────── RIGHT (panel) ───────────────────────── */
+.ws-right { margin: 12px 12px 12px 0; background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: 0 10px 30px -18px rgba(26,25,22,.18);
+  display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+
+.ws-tabs { display: flex; align-items: center; gap: 4px; padding: 12px 16px 0; border-bottom: 1px solid var(--border-soft);
+  overflow-x: auto; scrollbar-width: none; }
+.ws-tabs::-webkit-scrollbar { display: none; } /* no grey scrollbar stripe under the tabs */
+/* the right panel is narrow — stack the connection cards instead of 3 columns */
+.ws .conn-grid { grid-template-columns: 1fr; }
+.ws-tab { font-family: var(--font-sans); font-size: 12.5px; font-weight: 500; letter-spacing: .03em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none; padding: 8px 9px 12px; border-bottom: 2px solid transparent;
+  white-space: nowrap; flex: none; }
+.ws-tab:hover { color: var(--text); }
+.ws-tab.on { color: var(--accent); font-weight: 600; border-bottom-color: var(--accent); }
+.ws-tabs-spacer { flex: 1; }
+.ws-tab-act { flex: none; width: 26px; height: 26px; margin-bottom: 6px; border-radius: 7px; border: none;
+  background: transparent; color: var(--muted-2); cursor: pointer; font-size: 13px; }
+.ws-tab-act:hover { background: var(--panel-2); color: var(--text); }
+/* logout: tint red so it's clearly distinct from "back to site" */
+.ws-tab-act.logout { color: #c77; }
+.ws-tab-act.logout:hover { background: #fbf1f0; color: #cf7470; }
+
+.ws-panel-body { flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+/* routed views scroll inside the panel */
+.ws-panel-body > .content,
+.ws-panel-body > .fade.content { flex: 1; overflow-y: auto; padding: 24px 26px; gap: 24px; }
+/* Keep each section at its natural height — the panel scrolls instead of shrinking cards
+   (which, with .card overflow:hidden, would clip the bottom cards' content). */
+.ws-panel-body > .content > *,
+.ws-panel-body > .fade.content > * { flex-shrink: 0; }
+
+/* =====================================================================
+   LIGHT overrides for ported components inside the panel
+   ===================================================================== */
+.ws .card { background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow); }
+.ws .btn { background: var(--accent); color: #fff; }
+.ws .btn:hover { background: var(--accent-strong); opacity: 1; }
+.ws .btn.ghost { background: var(--panel-2); color: var(--text); }
+.ws .btn.ghost:hover { background: var(--panel-2); }
+.ws .cloud-tag, .ws .chip, .ws .status, .ws .cloud-badge, .ws .nav-badge {
+  background: var(--panel-2); border-color: var(--border); }
+.ws .conn-input { background: var(--card); border-color: var(--border); }
+.ws .conn-tabs { background: var(--panel-2); }
+.ws .conn-tab.on { background: var(--card); }
+.ws ::-webkit-scrollbar-thumb { background: #d4d4d4; }
+
+/* ── chat (agentchat.css uses the same tokens; just fix dark-only rgba edges) ── */
+.ws .chatpage, .ws .chat-landing { height: 100%; }
+.ws .home-bubble { background: var(--accent); color: #fff; }
+.ws .composer { border: 1px solid var(--border); background: var(--card);
+  box-shadow: 0 6px 20px -14px rgba(26,25,22,.3); }
+.ws .composer.big { box-shadow: 0 14px 40px -22px rgba(26,25,22,.3); }
+.ws .composer textarea { color: var(--text); }
+.ws .composer-icon { border: 1px solid var(--border); }
+.ws .composer-icon:hover { background: var(--panel-2); }
+.ws .composer-send { background: var(--accent); color: #fff; }
+.ws .chat-tb-btn { border: 1px solid var(--border); color: var(--text); }
+.ws .agent-pick-btn { border: none; background: var(--panel-2); color: var(--text); }
+.ws .agent-pick-menu { background: var(--card); border: 1px solid var(--border);
+  box-shadow: 0 16px 40px -16px rgba(26,25,22,.28); }
+.ws .agent-pick-row:hover { background: var(--panel-2); }
+.ws .agent-pick-row .pavatar { background: var(--accent-soft); color: var(--accent); }
+.ws .try-card { background: var(--card); border: 1px solid var(--border); }
+.ws .try-card:hover { border-color: var(--accent); }
+.ws .try-ico { background: var(--panel-2); }
+/* work-group is UNBOXED (cofounder style) — no border/background even inside .ws */
+.ws .work-group { border: none; background: none; }
+.ws .agent-md code, .ws .agent-md pre, .ws .work-detail-block { background: var(--panel-2); border: 1px solid var(--border); }
+.ws .chat-greet-mark { background: var(--text); color: #fff; }
+/* Full-width workspace area → keep the chat content in a centered, professional column. */
+.ws .chat-land { max-width: 640px; margin: 0 auto; padding: 24px; }
+.ws .chat-thread { max-width: 760px; margin: 0 auto; }
+.ws .chat-topbar { max-width: 100%; }
+.ws .chat-foot-in { max-width: 760px; margin: 0 auto; }
+.ws .chat-h1 { font-family: var(--font-sans); font-weight: 600; font-size: 46px; line-height: 1.08; letter-spacing: -.03em; margin-bottom: 14px; }
+
+/* =====================================================================
+   UNIFIED TYPE SCALE — retune ported components to one clean system.
+   Everything is Inter (--font-sans) except machine values → mono.
+   ===================================================================== */
+
+/* compact KPI cards */
+.ws .kpis { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.ws .card { padding: 16px; }
+.ws .kpi { padding: 14px 15px; }
+.ws .kpi .ico-box { width: 30px; height: 30px; border-radius: 8px; }
+.ws .kpi .label { font-size: var(--fs-label); color: var(--muted); margin-top: 12px; }
+.ws .kpi .value { font-family: var(--font-sans); font-size: var(--fs-kpi); font-weight: 600; letter-spacing: -.02em; margin-top: 3px; }
+
+/* section headings */
+.ws .section-head h2 { font-family: var(--font-sans); font-size: var(--fs-title); font-weight: 600; letter-spacing: -.01em; }
+.ws .section-head .muted { font-size: var(--fs-label); color: var(--muted-2); }
+
+/* connected-cloud cards — smaller, tidier */
+.ws .clouds { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.ws .cloud-card { padding: 14px; gap: 10px; }
+.ws .cloud-badge { width: 32px; height: 32px; border-radius: 9px; font-family: var(--font-mono); font-size: var(--fs-mono); }
+.ws .cloud-card .nm { font-family: var(--font-sans); font-size: var(--fs-body); font-weight: 600; }
+.ws .cloud-card .meta b { font-family: var(--font-sans); font-size: 18px; font-weight: 600; }
+.ws .cloud-card .meta div { font-size: var(--fs-label); }
+
+/* status pills → mono machine label */
+.ws .status { font-family: var(--font-mono); font-size: var(--fs-eyebrow); font-weight: 500; letter-spacing: .04em; text-transform: lowercase; }
+
+/* tables — sans cells, mono for machine columns (cloud/region/cost) */
+.ws th { font-family: var(--font-mono); font-size: var(--fs-eyebrow); letter-spacing: .1em; }
+.ws td { font-size: var(--fs-cell); }
+.ws .cloud-tag { font-family: var(--font-mono); font-size: 11px; font-weight: 500; }
+.ws .chip { font-family: var(--font-mono); font-size: 10.5px; }
+
+/* feed / body */
+.ws .feed-item .txt { font-size: var(--fs-body); }
+.ws .feed-item .sub { font-size: 11.5px; }
+.ws .empty { font-size: var(--fs-body); }
+
+/* resource-detail key/values — labels sans, values mono */
+.ws .rd-name { font-family: var(--font-sans); font-size: 16px; font-weight: 600; }
+.ws .rd-sec { font-family: var(--font-mono); font-size: var(--fs-eyebrow); letter-spacing: .08em; }
+.ws .rd-kv span, .ws .rd-stat span { font-size: var(--fs-label); }
+.ws .rd-kv b { font-family: var(--font-mono); font-size: var(--fs-mono); }
+.ws .rd-meta { font-family: var(--font-mono); font-size: var(--fs-mono); }
+
+/* planned (not-deployed) node detail — "deploy to view" placeholder */
+.ws .rd-undeployed { margin-top: 22px; border: 1px dashed var(--border); border-radius: 12px; background: var(--panel-2); padding: 26px 22px; text-align: center; }
+.ws .rd-undeployed-title { font-family: var(--font-sans); font-size: 15px; font-weight: 600; color: var(--text); }
+.ws .rd-undeployed-sub { margin-top: 8px; font-size: var(--fs-body); color: var(--muted); line-height: 1.55; max-width: 360px; margin-left: auto; margin-right: auto; }
+
+/* ===== chat session switcher ===== */
+.ws .sess-menu { position: relative; }
+.ws .sess-btn { display: inline-flex; align-items: center; gap: 6px; max-width: 230px; height: 30px; padding: 0 9px;
+  border: 1px solid var(--border); border-radius: 8px; background: var(--card); cursor: pointer; color: var(--text);
+  font: inherit; font-size: 13px; font-weight: 600; }
+.ws .sess-btn:hover { background: var(--panel-2); }
+.ws .sess-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 190px; }
+.ws .sess-pop { position: absolute; top: calc(100% + 6px); right: 0; width: 270px; max-height: 340px; overflow-y: auto;
+  background: var(--card); border: 1px solid var(--border); border-radius: 11px; box-shadow: 0 16px 40px -16px rgba(26,25,22,.3);
+  padding: 5px; z-index: 60; }
+.ws .sess-lbl { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; color: var(--muted-2); padding: 6px 9px 4px; font-weight: 700; }
+.ws .sess-row { display: flex; align-items: center; gap: 8px; padding: 8px 9px; border-radius: 7px; cursor: pointer; }
+.ws .sess-row:hover { background: var(--panel-2); }
+.ws .sess-row.on { background: var(--accent-soft); }
+.ws .sess-row-title { flex: 1; font-size: 13px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ws .sess-del { border: none; background: none; color: var(--muted-2); cursor: pointer; font-size: 12px; padding: 2px 4px; border-radius: 5px; opacity: 0; }
+.ws .sess-row:hover .sess-del { opacity: 1; }
+.ws .sess-del:hover { background: #f6e1df; color: #c0564f; }
+.ws .sess-empty { font-size: 12.5px; color: var(--muted-2); padding: 10px 9px; }
+
+/* ===== COST tab — actual spend + (i) instructions modal ===== */
+.ws .cost-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+/* page-level heading (Overview / Resources / Cost / Connections) — sans, matches the home/Nimbus page */
+.ws .cost-head h2 { font-family: var(--font-sans); font-size: 30px; font-weight: 600; letter-spacing: -.02em; line-height: 1.1; }
+.ws .cost-info-btn { border: 1px solid var(--border); background: var(--panel-2); color: var(--accent);
+  border-radius: 7px; padding: 4px 9px; font-family: var(--font-mono); font-size: var(--fs-eyebrow); cursor: pointer; }
+.ws .cost-info-btn:hover { background: var(--accent-soft); }
+.ws .cost-total { font-family: var(--font-sans); font-size: 30px; font-weight: 600; letter-spacing: -.02em; color: var(--text); margin-top: 8px; }
+.ws .cost-total-mo { font-size: 13px; font-weight: 500; color: var(--muted-2); }
+.ws .cost-rows { margin-top: 12px; display: grid; gap: 6px; border-top: 1px solid var(--border-soft); padding-top: 12px; }
+.ws .cost-row { display: flex; justify-content: space-between; font-size: var(--fs-cell); color: var(--muted); }
+.ws .cost-row b { font-family: var(--font-mono); color: var(--text); font-weight: 500; }
+/* (i) modal anchored on the LEFT */
+.ws .cost-modal-scrim { position: fixed; inset: 0; z-index: 300; background: rgba(26,25,22,.32); }
+.ws .cost-modal { position: fixed; top: 0; left: 0; height: 100%; width: 420px; max-width: 88vw; background: var(--card);
+  border-right: 1px solid var(--border); box-shadow: 18px 0 50px -24px rgba(26,25,22,.45); padding: 22px 24px;
+  display: flex; flex-direction: column; gap: 12px; animation: costSlide .22s ease; overflow-y: auto; }
+@keyframes costSlide { from { transform: translateX(-16px); opacity: .6; } to { transform: none; opacity: 1; } }
+.ws .cost-modal-head { display: flex; align-items: center; justify-content: space-between; }
+.ws .cost-modal-title { font-family: var(--font-sans); font-size: 17px; font-weight: 600; letter-spacing: -.01em; color: var(--text); }
+.ws .cost-modal-sub { font-size: var(--fs-label); color: var(--muted); line-height: 1.5; }
+.ws .cost-steps { margin: 6px 0 10px; padding-left: 20px; display: grid; gap: 12px; }
+.ws .cost-steps li { font-size: var(--fs-body); color: var(--text); line-height: 1.5; }
+
+/* model-estimated cost block (NodeDetail) */
+.ws .nd-cost { margin-top: 14px; border: 1px solid var(--border); border-radius: 11px;
+  background: var(--panel-2); padding: 13px 14px; }
+.ws .nd-cost-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.ws .nd-cost-label { font-size: var(--fs-label); color: var(--muted); }
+.ws .nd-cost-src { margin-left: 6px; font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .04em; color: var(--muted-2); }
+.ws .nd-cost-src.live { color: #3aa55d; }
+.ws .nd-cost-val { font-family: var(--font-sans); font-size: 22px; font-weight: 600; letter-spacing: -.02em; color: var(--text); }
+.ws .nd-cost-mo { font-size: 12px; font-weight: 500; color: var(--muted-2); }
+.ws .nd-cost-dim { font-family: var(--font-mono); font-size: 13px; font-weight: 400; color: var(--muted-2); }
+.ws .nd-cost-lines { margin-top: 10px; display: grid; gap: 5px; border-top: 1px solid var(--border-soft); padding-top: 10px; }
+.ws .nd-cost-line { display: flex; justify-content: space-between; font-size: var(--fs-label); color: var(--muted); }
+.ws .nd-cost-line b { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--text); font-weight: 500; }
+.ws .nd-cost-note { margin-top: 9px; font-size: 11px; color: var(--muted-2); line-height: 1.5; }
+
+/* editable node-config form (NodeDetail) */
+.ws .nd-form { display: grid; gap: 12px; margin-top: 10px; }
+.ws .nd-field { display: grid; gap: 5px; }
+.ws .nd-field label { font-size: var(--fs-label); color: var(--muted); }
+.ws .nd-field input, .ws .nd-field select { width: 100%; box-sizing: border-box; height: 34px;
+  padding: 0 11px; border: 1px solid var(--border); border-radius: 8px; background: var(--card);
+  color: var(--text); font-family: var(--font-mono); font-size: var(--fs-mono); outline: none; }
+.ws .nd-field input:focus, .ws .nd-field select:focus { border-color: var(--accent); }
+.ws .nd-toggle { justify-self: start; height: 34px; padding: 0 14px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--panel-2); color: var(--muted);
+  font-family: var(--font-mono); font-size: var(--fs-mono); }
+.ws .nd-toggle.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.ws .nd-actions { margin-top: 16px; display: flex; gap: 9px; }
+.ws .nd-actions .btn { flex: 1; justify-content: center; }
+.ws .nd-actions .nd-del { flex: 0 0 auto; color: #c0564f; border-color: #e7c9c6; background: #fbf1f0; }
+.ws .nd-actions .nd-del:hover { background: #f6e1df; }
+.ws .nd-hint { margin-top: 9px; font-size: var(--fs-label); color: var(--muted-2); line-height: 1.5; }
+
+/* live telemetry panel */
+.ws .tm { margin-top: 22px; border-top: 1px solid var(--line); padding-top: 16px; }
+.ws .tm-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.ws .tm-tools { display: flex; align-items: center; gap: 8px; }
+.ws .tm-ranges { display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+.ws .tm-range { padding: 3px 9px; font-size: var(--fs-label); font-family: var(--font-mono); color: var(--muted); background: transparent; border: 0; cursor: pointer; }
+.ws .tm-range + .tm-range { border-left: 1px solid var(--line); }
+.ws .tm-range.on { background: var(--accent); color: #fff; }
+.ws .tm-refresh { width: 26px; height: 26px; border: 1px solid var(--line); border-radius: 7px; background: var(--card); color: var(--muted); cursor: pointer; font-size: 13px; }
+.ws .tm-refresh:hover:not(:disabled) { color: var(--text); border-color: var(--muted-2); }
+.ws .tm-refresh:disabled { opacity: .5; cursor: default; }
+.ws .tm-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ws .tm-card { border: 1px solid var(--line); border-radius: 10px; padding: 10px 11px 4px; background: var(--card); }
+.ws .tm-card-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.ws .tm-label { font-size: var(--fs-label); color: var(--muted); }
+.ws .tm-value { font-size: 15px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+.ws .tm-spark { display: block; width: 100%; height: 36px; margin-top: 6px; }
+.ws .tm-spark.empty { background: repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 7px); opacity: .4; border-radius: 4px; }
+.ws .tm-foot { margin-top: 10px; font-size: var(--fs-label); color: var(--muted-2); font-family: var(--font-mono); }
+
+/* overview "live activity" telemetry panel */
+.ws .fa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.ws .fa-card { border: 1px solid var(--line); border-radius: 10px; padding: 12px 13px 6px; background: var(--card); }
+.ws .fa-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ws .fa-nm { font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ws .fa-sub { font-size: var(--fs-label); color: var(--muted); margin-top: 1px; }
+.ws .fa-row { display: flex; align-items: baseline; justify-content: space-between; margin-top: 9px; font-size: var(--fs-label); color: var(--muted); }
+.ws .fa-row b { font-size: 14px; color: var(--text); font-variant-numeric: tabular-nums; }
+.ws .fa-row.sub { margin-top: 4px; }
+.ws .fa-none { margin-top: 9px; font-size: var(--fs-label); color: var(--muted-2); }
+
+/* "needs attention → diagnose" bar */
+.ws .attn-bar { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 10px;
+  border: 1px solid #e7c9c6; background: #fbf1f0; color: #8a3f38; text-decoration: none; }
+.ws .attn-bar:hover { background: #f6e1df; }
+.ws .attn-bar b { font-weight: 600; font-size: var(--fs-body); }
+.ws .attn-dot { width: 8px; height: 8px; border-radius: 50%; background: #cf7470; flex: 0 0 auto; }
+.ws .attn-cta { margin-left: auto; font-family: var(--font-mono); font-size: var(--fs-label); color: var(--accent); }
+
+/* home "panel" cards (entry points that open a left modal) */
+.ws .grid.panels { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.ws .panel-card { text-align: left; cursor: pointer; display: flex; flex-direction: column; gap: 4px;
+  padding: 16px; background: var(--card); border: 1px solid var(--border); transition: border-color .12s, transform .12s; }
+.ws .panel-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.ws .pc-eyebrow { font-family: var(--font-mono); font-size: var(--fs-eyebrow); letter-spacing: .1em; color: var(--muted-2); }
+.ws .pc-title { font-size: 16px; font-weight: 600; color: var(--text); }
+.ws .pc-sub { font-size: var(--fs-label); color: var(--muted); line-height: 1.45; }
+.ws .pc-cta { margin-top: 6px; font-family: var(--font-mono); font-size: var(--fs-label); color: var(--accent); }
+
+/* left-anchored full panel (modal) */
+.ws .lp-overlay { position: fixed; inset: 0; z-index: 60; background: rgba(30,28,24,.34); display: flex; }
+.ws .lp { width: min(880px, 94vw); height: 100%; background: var(--bg, #faf8f3); border-right: 1px solid var(--border);
+  box-shadow: 2px 0 30px rgba(0,0,0,.18); display: flex; flex-direction: column; animation: lp-in .16s ease-out; }
+@keyframes lp-in { from { transform: translateX(-18px); opacity: .4 } to { transform: none; opacity: 1 } }
+.ws .lp-head { display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 16px 20px; border-bottom: 1px solid var(--line); }
+.ws .lp-title { font-family: var(--font-sans); font-size: 19px; font-weight: 600; letter-spacing: -.01em; color: var(--text); }
+.ws .lp-sub { font-size: var(--fs-label); color: var(--muted); margin-top: 2px; }
+.ws .lp-head-right { display: flex; align-items: center; gap: 12px; }
+.ws .lp-time { font-family: var(--font-mono); font-size: var(--fs-label); color: var(--muted-2); }
+.ws .lp-close { width: 30px; height: 30px; border: 1px solid var(--line); border-radius: 8px; background: var(--card);
+  color: var(--muted); cursor: pointer; font-size: 13px; }
+.ws .lp-close:hover { color: var(--text); border-color: var(--muted-2); }
+.ws .lp-body { flex: 1; overflow-y: auto; padding: 20px; }
+.ws .lp-res { margin-bottom: 18px; }
+.ws .lp-res-h { font-size: 14px; margin-bottom: 2px; }
+.ws .lp-res-h .muted { font-size: var(--fs-label); font-weight: 400; }
+
+/* live logs stream */
+.ws .logs-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.ws .logs-ranges, .ws .logs-tools { display: inline-flex; align-items: center; gap: 6px; }
+.ws .logs-live { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: var(--fs-label); color: var(--muted); }
+.ws .logs-dot { width: 7px; height: 7px; border-radius: 50%; background: #3aa55d; box-shadow: 0 0 0 0 rgba(58,165,93,.5); animation: logs-pulse 1.6s infinite; }
+.ws .logs-dot.off { background: var(--muted-2); animation: none; }
+@keyframes logs-pulse { 0% { box-shadow: 0 0 0 0 rgba(58,165,93,.5) } 70% { box-shadow: 0 0 0 6px rgba(58,165,93,0) } 100% { box-shadow: 0 0 0 0 rgba(58,165,93,0) } }
+.ws .logs-note { font-size: var(--fs-label); color: var(--muted); background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 8px 11px; margin-bottom: 8px; }
+.ws .logs-stream { font-family: var(--font-mono); font-size: 12px; line-height: 1.7; background: #1c1b19; border-radius: 10px; padding: 12px 14px; overflow-x: auto; }
+.ws .logline { display: flex; gap: 9px; white-space: pre-wrap; word-break: break-word; }
+.ws .ll-time { color: #8d877b; flex: 0 0 auto; }
+.ws .ll-cloud { flex: 0 0 auto; font-size: 10px; padding: 1px 4px; border-radius: 4px; align-self: center; }
+.ws .ll-cloud.aws { background: #3a2f17; color: #e9a93c; }
+.ws .ll-cloud.gcp { background: #16314d; color: #6aa8e6; }
+.ws .ll-src { color: #6f9e7e; flex: 0 0 auto; }
+.ws .ll-sev { flex: 0 0 auto; font-size: 10px; align-self: center; }
+.ws .ll-sev.error, .ws .ll-sev.critical { color: #e07a6f; }
+.ws .ll-sev.warning { color: #e0b341; }
+.ws .ll-msg { color: #d6d2c8; }
+
+/* ───────── reference polish: editorial serif headings + uppercase-mono buttons/labels ───────── */
+/* section + card titles → sans (match the home/Nimbus page typography) */
+.ws .section-head h2 { font-family: var(--font-sans); font-size: 17px; font-weight: 600; letter-spacing: -.01em; }
+.ws .pc-title { font-family: var(--font-sans); font-size: 16px; font-weight: 600; letter-spacing: -.01em; }
+/* card eyebrows / KPI labels → uppercase tracked mono (the "READINESS" / "COMPANY AUDIT" look) */
+.ws .kpi .label { font-family: var(--font-mono); font-size: var(--fs-eyebrow); letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted-2); margin-top: 14px; }
+
+/* buttons → uppercase tracked mono pills, hug content. Primary = blue, secondary = bordered white */
+.ws .btn { font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  font-weight: 600; padding: 10px 17px; border-radius: 9px; border: 1px solid transparent; white-space: nowrap;
+  background: var(--accent); color: #fff; box-shadow: 0 2px 8px -3px rgba(15,23,42,.18); }
+.ws .btn:hover { background: var(--accent-strong); }
+.ws .btn.ghost:not(.nd-del) { background: var(--card); color: var(--text); border: 1px solid var(--border); box-shadow: none; }
+.ws .btn.ghost:not(.nd-del):hover { background: var(--panel-2); }
+/* the row of action buttons: hug content (like the reference) instead of stretching full width */
+.ws .nd-actions { flex-wrap: wrap; }
+.ws .nd-actions .btn { flex: 0 0 auto; font-size: 10.5px; padding: 10px 14px; }
+/* tabs: normal sans font (matches the rest of the UI), light tracking */
+.ws .ws-tab { letter-spacing: .03em; }
+
+/* resources table: fit the narrow right panel (5 cols, truncate long name) */
+.ws .res-table { table-layout: fixed; width: 100%; }
+.ws .res-table th, .ws .res-table td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 10px; }
+.ws .res-table th:nth-child(1), .ws .res-table td:nth-child(1) { width: 32%; }
+.ws .res-table th:nth-child(2), .ws .res-table td:nth-child(2) { width: 20%; }
+.ws .res-table th:nth-child(3), .ws .res-table td:nth-child(3) { width: 13%; }
+.ws .res-table th:nth-child(4), .ws .res-table td:nth-child(4) { width: 18%; }
+.ws .res-table th:nth-child(5), .ws .res-table td:nth-child(5) { width: 17%; padding-right: 0; }
+.ws .card { overflow: hidden; }
+
+/* ── "Code" toggle (next to the project) → opens the Code workspace ── */
+.ws-code-toggle { display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--card); border-radius: 999px;
+  padding: 4px 6px 4px 11px; transition: border-color .14s, background .14s; }
+.ws-code-toggle:hover { border-color: var(--muted-2); }
+.ws-code-lbl { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .08em;
+  text-transform: uppercase; font-weight: 600; color: var(--muted); }
+.ws-code-toggle:hover .ws-code-lbl { color: var(--text); }
+.ws-code-switch { position: relative; width: 30px; height: 17px; border-radius: 999px;
+  background: var(--panel-2); border: 1px solid var(--border); transition: background .18s; }
+.ws-code-dot { position: absolute; top: 1px; left: 1px; width: 13px; height: 13px; border-radius: 50%;
+  background: var(--muted-2); transition: transform .18s cubic-bezier(.4,0,.2,1), background .18s; }
+/* "on" state (used on the Code page's own toggle) */
+.ws-code-toggle.on { background: var(--accent); border-color: var(--accent); }
+.ws-code-toggle.on .ws-code-lbl { color: #fff; }
+.ws-code-toggle.on .ws-code-switch { background: rgba(255,255,255,.28); border-color: transparent; }
+.ws-code-toggle.on .ws-code-dot { transform: translateX(13px); background: #fff; }

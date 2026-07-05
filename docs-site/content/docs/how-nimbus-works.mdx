@@ -1,0 +1,70 @@
+---
+title: How Nimbus works
+description: The agent, its two modes, and the safety protocol it follows when operating your cloud.
+---
+
+Nimbus is a single conversational agent with access to your cloud. Its capabilities are assembled per project based on which clouds you've connected, so the more you connect, the more it can do.
+
+## Two modes
+
+<CardGroup cols={2}>
+  <Card title="Design mode" icon="cloud">
+    Nimbus only draws on the **Canvas**, it plans architecture and never touches a real cloud. Perfect for sketching a system before you build it.
+  </Card>
+  <Card title="Agent mode" icon="terminal">
+    Nimbus operates your **real** cloud, inventory, telemetry, logs, cost, deploys, and database work, plus everything from design mode.
+  </Card>
+</CardGroup>
+
+## The cloud-control protocol
+
+When Nimbus operates a real cloud, it follows a strict, safety-first protocol:
+
+<Steps>
+  <Step title="Discover before guessing">
+    It queries live inventory to see what actually exists, rather than assuming.
+  </Step>
+  <Step title="Read before write">
+    It inspects a resource's current state before proposing any change.
+  </Step>
+  <Step title="Always scope">
+    Every action is scoped by region (AWS) or project (GCP) so nothing happens in the wrong place.
+  </Step>
+  <Step title="Confirm before mutating">
+    Before anything **billable or destructive**, Nimbus shows a plan and an estimated cost and waits for your explicit "go".
+  </Step>
+  <Step title="Never expose secrets">
+    Credentials and secret values are never printed back to you.
+  </Step>
+</Steps>
+
+<Warning>
+Nimbus will not create, modify, or delete billable resources without confirming first. If you ask it to "just do it," it will still show you the plan and cost before acting.
+</Warning>
+
+## How it reaches your cloud
+
+Nimbus doesn't hard-code one tool per service. Instead it drives your cloud through official command interfaces, scoped to *your* credentials:
+
+- **AWS**, runs any AWS CLI command (and can suggest the right one). Reaches EC2, S3, RDS, Lambda, VPC, IAM, ECS, CloudWatch, Cost Explorer, and more.
+- **GCP**, runs any `gcloud` command, with dedicated tools for Cloud Run.
+- **Databases**, full management of **Supabase** and **Neon** (tables, SQL, migrations, branches).
+- **GitHub**, read repos, files, issues, PRs, and workflow runs (via a connected GitHub account).
+
+<Info>
+Each connection runs in an isolated process with **only your credentials**, never the host's. Connections are per-user, even within a shared project.
+</Info>
+
+## Code changes go to a machine
+
+There's one hard rule: **Nimbus never edits your application code itself.** Any request to change code is routed to a coding agent running on a machine (a teammate's computer or a rented one), which makes the change and opens a PR while Nimbus supervises. See [Repairs](/docs/repairs).
+
+## What you can ask
+
+- *"What's running / list my resources"*
+- *"Why is service X down or slow?"* (Nimbus diagnoses: telemetry → classify → logs → root cause → fix)
+- *"Estimate the cost of this stack"* / *"What am I spending this month?"*
+- *"Design a 3-tier app"* then *"deploy it"*
+- *"Look at this repo and design its infrastructure"*
+- *"Fix this bug / add this feature and open a PR"*
+- Database work on Supabase or Neon

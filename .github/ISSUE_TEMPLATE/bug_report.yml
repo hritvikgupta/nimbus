@@ -1,0 +1,66 @@
+name: 🐛 Bug report
+description: Report a problem so we can fix it
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug! Please **do not** include secrets
+        (`.env` values, tokens, credentials) in this report.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug and what you expected instead.
+      placeholder: When I connect a GCP account, ...
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: The exact steps to trigger the bug.
+      placeholder: |
+        1. Go to Connections
+        2. Click "Connect with Google"
+        3. See error
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit
+      description: Output of `git rev-parse --short HEAD` or the release tag.
+    validations:
+      required: false
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Web app (frontend)
+        - API server (backend)
+        - Agent / chat
+        - Cloud connections (AWS/GCP)
+        - Repairs / CLI worker
+        - Docs
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, Node version, browser (if relevant).
+      placeholder: macOS 15, Node 20.11, Chrome 130
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Console or server output. **Redact any secrets.**
+      render: shell
+    validations:
+      required: false
