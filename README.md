@@ -10,6 +10,8 @@ An AI-powered cloud control plane. One agent that reads your code, understands y
 architecture, acts on real AWS &amp; GCP credentials, and fixes your repos — all through
 plain conversation.
 
+### [🌐 Website](https://trynimbus.dev) &nbsp;·&nbsp; [📖 Documentation](https://docs.trynimbus.dev) &nbsp;·&nbsp; [🚀 Quick start](#run-with-docker-recommended)
+
 [![License: BSL 1.1](https://img.shields.io/badge/License-BSL%201.1-black.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%E2%89%A520-black.svg)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React-18-black.svg)](https://react.dev)
