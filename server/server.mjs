@@ -77,6 +77,27 @@ for (const routes of [authRoutes, agentRoutes, chatRoutes, connectionRoutes, pro
   app.use(routes)
 }
 
+// ── Serve the built SPA (single-container / Docker) ────────────────────────────────────────────
+// In dev the Vite server hosts the app on :5280 and proxies /api here, so this block is inert
+// (no dist/). In production/Docker we `vite build` to ../dist and serve it from THIS server, so one
+// process on one port serves both the app and the API (same origin → the session cookie just works).
+// Mounted AFTER the API routers so /api/* is never shadowed; the SPA fallback skips /api and docs.
+const SPA_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'dist')
+if (existsSync(SPA_DIR)) {
+  const spaStatic = express.static(SPA_DIR)
+  app.use((req, res, next) => {
+    if (isDocsHost(req.hostname)) return next()          // docs.* handled above
+    if (req.path.startsWith('/api/')) return next()      // let API 404s be JSON
+    spaStatic(req, res, () => {
+      if (req.method !== 'GET') return next()
+      res.sendFile(path.join(SPA_DIR, 'index.html'), (e) => { if (e) next() }) // client-side routing
+    })
+  })
+  console.log(`spa → serving ${SPA_DIR}`)
+} else {
+  console.log('spa → not built (dev mode: Vite serves it on :5280); run `npm run build` for single-container')
+}
+
 const PORT = process.env.AGENT_PORT || 8788
 app.listen(PORT, () => console.log(`nimbus agent api → http://localhost:${PORT}`))
 startScheduler() // baseline trigger (no-op unless OPS_SCAN_MINUTES is set)

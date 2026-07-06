@@ -83,13 +83,41 @@ boundary every service and MCP call is scoped to.
   Model Context Protocol (`@modelcontextprotocol/sdk`)
 - **Integrations** — Composio (GitHub), AWS &amp; GCP MCP servers, Fly.io (provisioning / rented machines)
 
-## Quick start
+## Run with Docker (recommended)
+
+The fastest way to run Nimbus. The image bundles everything the cloud MCP servers need —
+`git`, `uv` (AWS), the `gcloud` CLI (GCP) and Node — so there's nothing else to install. You only
+provide your `.env`.
+
+```bash
+git clone https://github.com/hritvikgupta/nimbus.git
+cd nimbus
+cp .env.example .env      # fill in NIMBUS_ENC_KEY + your LLM provider (+ integrations)
+docker compose up --build
+# open http://localhost:8788
+```
+
+One container serves the app **and** the API on port `8788`. Your data (the SQLite DB + encrypted
+connections) persists in the `nimbus-data` volume across restarts. Generate the encryption key with:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+# or: openssl rand -base64 32
+```
+
+> Prefer plain `docker`? `docker build -t nimbus . && docker run -p 8788:8788 --env-file .env -v nimbus-data:/app/server/.data nimbus`
+
+To run from source instead (for development), follow the steps below.
+
+## Quick start (from source)
 
 ### Prerequisites
 
 - **Node.js ≥ 20** and npm
 - An **LLM provider** — a Databricks serving endpoint *or* an OpenRouter API key
 - *(optional)* a **Composio** API key for GitHub, and AWS/GCP credentials to connect real clouds
+- For the cloud MCP servers: [`uv`](https://docs.astral.sh/uv/) (AWS) and the
+  [`gcloud` CLI](https://cloud.google.com/sdk/docs/install) (GCP) — bundled automatically in Docker
 
 ### 1. Install
 
@@ -127,6 +155,17 @@ npm run setup:mcp
 This runs `npm install` for the Node servers, builds `gcloud-mcp`, and checks for
 [`uv`](https://docs.astral.sh/uv/) (needed to launch the AWS server). You can skip this if you
 only use one cloud — the corresponding server is only spawned when a matching connection exists.
+
+**Host prerequisites** (the MCP servers shell out to these — install the ones for the clouds you use):
+
+| Cloud | Requires on the host | Why |
+|---|---|---|
+| **AWS** | [`uv`](https://docs.astral.sh/uv/) | Launches `aws-api-mcp-server` (Python); pulls its deps from PyPI on first run. Gives the full `call_aws` tool. |
+| **GCP** | the [`gcloud` CLI](https://cloud.google.com/sdk/docs/install) on `PATH` | `gcloud-mcp` executes `gcloud` commands — the full `run_gcloud_command` surface. |
+
+Once installed, the agent has the **complete AWS and gcloud command surface** plus Cloud Run
+deploy/logs — the servers themselves are the full upstream implementations, not trimmed subsets.
+You still connect your own cloud credentials in the app (**Connections**).
 
 ### 4. Run
 
