@@ -49,6 +49,26 @@ function migrateLegacyFiles() {
 }
 migrateLegacyFiles()
 
+// ── Seed committed reference data (server/seed/*.json) ────────────────────────────────────────
+// Static, non-secret reference the app needs but that isn't user data — e.g. the Terraform
+// provider schemas (tf-aws.json / tf-gcp.json) that drive resource config fields. Committed to the
+// repo so a fresh clone works out of the box. Loaded only if the key is ABSENT, so it never
+// overwrites a value a running instance already has.
+function seedReferenceData() {
+  const SEED_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'seed')
+  if (!fs.existsSync(SEED_DIR)) return
+  const putIfAbsent = db.prepare('INSERT INTO kv (name, data) VALUES (?, ?) ON CONFLICT(name) DO NOTHING')
+  for (const f of fs.readdirSync(SEED_DIR)) {
+    if (!f.endsWith('.json')) continue
+    try {
+      const raw = fs.readFileSync(path.join(SEED_DIR, f), 'utf8')
+      JSON.parse(raw) // validate
+      putIfAbsent.run(f, raw)
+    } catch { /* skip unreadable/invalid seed files */ }
+  }
+}
+try { seedReferenceData() } catch { /* seed dir optional */ }
+
 export function loadJson(name, fallback) {
   try {
     const row = _get.get(name)
