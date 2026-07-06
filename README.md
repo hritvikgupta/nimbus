@@ -195,13 +195,20 @@ All configuration is via environment variables in `.env` (loaded by `npm run api
 | `GOOGLE_OAUTH_CLIENT_ID` / `GOOGLE_OAUTH_CLIENT_SECRET` | optional | GCP keyless *Connect with Google*. |
 | `FLY_API_TOKEN` / `FLY_ORG` / `FLY_REGION` / `FLY_APP` / `FLY_MACHINE_IMAGE` | optional | Provisioning &amp; rented machines. |
 | `AGENT_PORT` | optional | API port (default `8788`). |
-| `APP_URL` | optional | Public app URL (default `http://localhost:5280`). |
+| `APP_URL` | optional | Public app URL — GCP OAuth redirects + links (dev `http://localhost:5280`; Docker `http://localhost:8788`). |
 | `ALLOW_SIGNUP` | optional | `false` closes registration on public deploys. |
 | `AGENT_DAILY_LIMIT` | optional | Per-user daily cap on expensive agent/cloud actions. |
 | `CORS_ORIGINS` | optional | Comma-separated allowlist; empty = same-origin only. |
 | `DOCS_HOST` | optional | Extra host to serve docs from (besides `docs.*`). |
 | `OPS_SCAN_MINUTES` | optional | `> 0` enables the scheduled incident scan. |
 | `WEBHOOK_BASE` | optional | Public base URL for inbound webhooks. |
+
+**What you actually need:**
+
+- **Always:** `NIMBUS_ENC_KEY` + an AI model (`LLM_PROVIDER` + `LLM_MODEL` + `OPENROUTER_API_KEY`, or the Databricks trio). Your provider, your key, your billing.
+- **To rent machines (Fly):** your own `FLY_API_TOKEN` (+ optional `FLY_*`). Leave blank to disable the feature. Rented machines need **no public URL** — the worker runs inside this server and drives Fly via its API. The person renting supplies their own coding-agent key per rental in the UI.
+- **To connect your own laptop/CI for repairs:** nothing here — that machine runs the [`@nimbus/cli`](cli/README.md) worker and *polls* this server, so **it** is pointed at Nimbus (`nimbus start <key> --url https://your-host`), not the other way around.
+- **When hosting publicly:** set `APP_URL` to your real URL (used for GCP OAuth redirects + links), and optionally `WEBHOOK_BASE`, `CORS_ORIGINS`, `ALLOW_SIGNUP=false`.
 
 > **Never commit your real `.env`.** It is gitignored; `.env.example` is the template.
 
