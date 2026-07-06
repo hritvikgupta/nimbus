@@ -7,7 +7,9 @@ All notable changes to this project are documented here. The format is based on
 ## [Unreleased]
 
 ### Added
-- Initial public open-source release of Nimbus — the AI cloud control plane.
+- Initial public source-available release of Nimbus — the AI cloud control plane.
+- Licensed under the Business Source License 1.1 (converts to Apache 2.0 on 2030-01-01), with
+  NOTICE, TRADEMARKS, DCO, and THIRD-PARTY-NOTICES.
 - Conversational agent (ReAct loop) with design and agent modes.
 - Live architecture canvas (React Flow).
 - Multi-cloud connections: AWS (keys / IAM role) and GCP (service account / OAuth).

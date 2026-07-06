@@ -10,7 +10,7 @@ An AI-powered cloud control plane. One agent that reads your code, understands y
 architecture, acts on real AWS &amp; GCP credentials, and fixes your repos — all through
 plain conversation.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-black.svg)](LICENSE)
+[![License: BSL 1.1](https://img.shields.io/badge/License-BSL%201.1-black.svg)](LICENSE)
 [![Node](https://img.shields.io/badge/node-%E2%89%A520-black.svg)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React-18-black.svg)](https://react.dev)
 [![Made with Vite](https://img.shields.io/badge/Vite-5-black.svg)](https://vitejs.dev)
@@ -48,6 +48,18 @@ Nimbus is built around three ideas:
 | 🔌 **GitHub &amp; more** | Connect repositories through Composio; the agent reads your code, PRs and CI before acting. |
 | 👥 **Teams &amp; permissions** | Invite by email; per-member toggles for Channels, Machines &amp; repairs, and Cloud &amp; resources. |
 | 🔐 **Secure by design** | Credentials encrypted at rest (AES-256-GCM), never printed or logged; membership-enforced access; server-side audit trail. |
+
+<div align="center">
+
+**Design infrastructure on a live canvas**
+
+<img src="docs/images/canvas.png" alt="Nimbus architecture canvas" width="840" />
+
+**Rent a machine on demand · Repair code on real machines**
+
+<img src="docs/images/rent-a-machine.png" alt="Rent a machine" width="420" />&nbsp;<img src="docs/images/repairs.png" alt="Repairs" width="420" />
+
+</div>
 
 ## Architecture
 
@@ -287,4 +299,13 @@ and PR process.
 
 ## License
 
-[MIT](LICENSE) © Nimbus contributors
+**Nimbus is source-available under the [Business Source License 1.1](LICENSE).** © 2026 Hritvik Gupta.
+
+You may **read, self-host, modify, and use it** freely — for internal, development, evaluation, and
+non-commercial purposes. You may **not** offer Nimbus to third parties as a competing hosted/managed
+service. On the **Change Date (2030-01-01)** each released version converts to **Apache 2.0**.
+
+- **Trademarks** ("Nimbus", the logo) are reserved — see [TRADEMARKS.md](TRADEMARKS.md).
+- **Third-party components** (the vendored MCP servers under `server/mcp/`) keep their own Apache-2.0
+  licenses — see [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md).
+- Need a commercial or hosting license? Contact the maintainer.

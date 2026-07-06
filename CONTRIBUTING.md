@@ -76,4 +76,21 @@ Open a GitHub issue with clear reproduction steps (for bugs) or the problem you'
 (for features). For security issues, follow [SECURITY.md](SECURITY.md) instead — do **not** open a
 public issue.
 
-By contributing, you agree that your contributions are licensed under the [MIT License](LICENSE).
+## Sign your commits (DCO)
+
+This project uses the [Developer Certificate of Origin](DCO). Certify that you wrote (or have the
+right to submit) your contribution by adding a `Signed-off-by` line to each commit:
+
+```bash
+git commit -s -m "your message"
+# → Signed-off-by: Your Name <you@example.com>
+```
+
+## Contribution licensing
+
+Nimbus is distributed under the [Business Source License 1.1](LICENSE). **By submitting a
+contribution, you agree that your contribution is provided under that same license, and you grant
+the Licensor (Hritvik Gupta) a perpetual, worldwide, non-exclusive, royalty-free license — with the
+right to sublicense and relicense — to use, reproduce, modify, distribute, and commercialize your
+contribution as part of Nimbus, including under the Change License and any commercial license.** You
+represent that you have the right to grant this. You retain copyright to your contribution.

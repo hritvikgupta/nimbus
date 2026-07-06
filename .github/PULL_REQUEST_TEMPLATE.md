@@ -23,3 +23,4 @@
 - [ ] New config is added to `.env.example` and the README's Configuration table.
 - [ ] Per-user isolation is respected (server work is scoped to `req.user.id`).
 - [ ] The change matches the surrounding code style and layering.
+- [ ] My commits are signed off (`git commit -s`) per the [DCO](../DCO), and I accept the contribution terms in [CONTRIBUTING.md](../CONTRIBUTING.md).
