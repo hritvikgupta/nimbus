@@ -92,18 +92,23 @@ provide your `.env`.
 ```bash
 git clone https://github.com/hritvikgupta/nimbus.git
 cd nimbus
-cp .env.example .env      # fill in NIMBUS_ENC_KEY + your LLM provider (+ integrations)
+cp .env.example .env
+
+# 1. Generate the master encryption key and append it to .env (protects stored credentials):
+echo "NIMBUS_ENC_KEY=$(openssl rand -base64 32)" >> .env
+
+# 2. Open .env and fill in your AI model — LLM_PROVIDER, LLM_MODEL, OPENROUTER_API_KEY.
+#    (Optional: FLY_API_TOKEN to rent machines, COMPOSIO_API_KEY for GitHub.)
+
+# 3. Run it:
 docker compose up --build
 # open http://localhost:8788
 ```
 
-One container serves the app **and** the API on port `8788`. Your data (the SQLite DB + encrypted
-connections) persists in the `nimbus-data` volume across restarts. Generate the encryption key with:
+> No `openssl`? Use `node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"` and paste the result as `NIMBUS_ENC_KEY=` in `.env`.
 
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
-# or: openssl rand -base64 32
-```
+One container serves the app **and** the API on port `8788`. Your data (the SQLite DB + encrypted
+connections) persists in the `nimbus-data` volume across restarts.
 
 > Prefer plain `docker`? `docker build -t nimbus . && docker run -p 8788:8788 --env-file .env -v nimbus-data:/app/server/.data nimbus`
 
