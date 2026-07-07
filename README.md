@@ -63,6 +63,36 @@ Nimbus is built around three ideas:
 
 </div>
 
+## How it works
+
+```mermaid
+flowchart LR
+    A["Web app<br/>chat · canvas · dashboard"] -->|HTTP /api| G
+    B["Connected machine<br/>@nimbus/cli"] -. "poll · repairs" .-> G
+    F["Rented machine<br/>Fly"] -. "driven via API" .-> G
+
+    G(["Nimbus Agent<br/>ReAct loop + tools"])
+
+    G --> SEC["Plan-then-act<br/>writes need approval"]
+    G --> MCP["Per-user MCP servers"] --> CLOUD["AWS · GCP<br/>full CLI surface"]
+    G --> CANVAS["Live architecture canvas"]
+    G --> REPAIR["Repairs → open PR<br/>Claude Code"]
+    G --> OBS["Cost · logs · telemetry"]
+    G --> VAULT["Encrypted credential vault<br/>AES-256-GCM"]
+
+    classDef agent fill:#FF9900,stroke:#FF9900,color:#111111,font-weight:bold;
+    classDef box fill:#161b22,stroke:#30363d,color:#e6edf3;
+    class G agent;
+    class A,B,F,SEC,MCP,CLOUD,CANVAS,REPAIR,OBS,VAULT box;
+```
+
+You talk to the Nimbus agent from the web app (or `@mention` it in a channel). It reads your code
+and real cloud state, and grounds every answer in evidence — a file, a log line, a live resource.
+It acts through **per-user MCP servers** scoped to your own credentials, giving it the full `aws`
+and `gcloud` surface. **Reads are autonomous; anything that changes a billable resource waits for
+your approval.** Secrets stay in the encrypted vault and never reach the model. Repairs run on a
+machine you connect (your laptop, CI, or a rented one) and come back as a pull request.
+
 ## Architecture
 
 Nimbus is a **React SPA** talking to a **thin Express API** that fans out to services,
