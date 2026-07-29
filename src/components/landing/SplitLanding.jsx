@@ -745,25 +745,25 @@ export default function SplitLanding({ onEnter }) {
           </div>
         </section>
 
-        {/* 02 connect a machine — dark */}
-        <section data-panel="1" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', background: '#111', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+        {/* 02 connect a machine — white */}
+        <section data-panel="1" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', borderBottom: `1px solid ${line}`, background: bg2 }}>
           <div style={{ maxWidth: 760 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 14, fontFamily: SANS }}>
               <span style={{ fontSize: 16, letterSpacing: '-0.01em', color: aws, fontWeight: 700 }}>02</span>
-              <span style={{ fontSize: 16, letterSpacing: '-0.02em', color: '#fff', fontWeight: 700 }}>Connect a machine</span>
+              <span style={{ fontSize: 16, letterSpacing: '-0.02em', color: ink, fontWeight: 700 }}>Connect a machine</span>
             </div>
-            <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 14px', color: '#fff' }}>Run agents on any machine you can reach.</h2>
-            <p style={{ fontSize: 13.5, lineHeight: 1.6, letterSpacing: '-0.01em', color: '#bbb', margin: '0 0 28px', fontWeight: 400, maxWidth: 560 }}>Bring your own box, pair on a teammate's, or rent an ephemeral one, each attaches over a native Claude or Codex session.</p>
+            <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 14px', color: ink }}>Run agents on any machine you can reach.</h2>
+            <p style={{ fontSize: 13.5, lineHeight: 1.6, letterSpacing: '-0.01em', color: mut, margin: '0 0 28px', fontWeight: 400, maxWidth: 560 }}>Bring your own box, pair on a teammate's, or rent an ephemeral one, each attaches over a native Claude or Codex session.</p>
             <div data-gsap="runtimes" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
               {RUNTIMES.map((r) => (
-                <div key={r.tag} className="spl-card" style={{ background: '#1e1e1e', border: '1px solid #333', borderRadius: 8, padding: 22 }}>
+                <div key={r.tag} className="spl-card" style={{ background: bg, border: `1px solid ${line}`, borderRadius: 8, padding: 22 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-                    <span style={{ fontSize: 10.5, letterSpacing: '0.14em', color: '#999', textTransform: 'uppercase', fontFamily: MONO }}>{r.tag}</span>
-                    <span style={{ width: 26, height: 26, border: '1px solid #444', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, color: '#fff' }}>{r.glyph}</span>
+                    <span style={{ fontSize: 10.5, letterSpacing: '0.14em', color: faint, textTransform: 'uppercase', fontFamily: MONO }}>{r.tag}</span>
+                    <span style={{ width: 26, height: 26, border: `1px solid ${line2}`, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, color: ink }}>{r.glyph}</span>
                   </div>
-                  <h3 style={{ fontSize: 14.5, fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 9px', color: '#fff' }}>{r.title}</h3>
-                  <p style={{ fontSize: 12, lineHeight: 1.55, letterSpacing: '-0.01em', color: '#bbb', margin: '0 0 16px' }}>{r.body}</p>
-                  <div style={{ borderTop: '1px solid #333', paddingTop: 12, fontSize: 11, color: '#ccc', letterSpacing: '-0.01em', fontFamily: MONO }}>{r.cmd}</div>
+                  <h3 style={{ fontSize: 14.5, fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 9px', color: ink }}>{r.title}</h3>
+                  <p style={{ fontSize: 12, lineHeight: 1.55, letterSpacing: '-0.01em', color: mut, margin: '0 0 16px' }}>{r.body}</p>
+                  <div style={{ borderTop: `1px solid ${line}`, paddingTop: 12, fontSize: 11, color: mut, letterSpacing: '-0.01em', fontFamily: MONO }}>{r.cmd}</div>
                 </div>
               ))}
             </div>
