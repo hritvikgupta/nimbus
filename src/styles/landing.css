@@ -35,8 +35,6 @@
 .spl-navrow:hover{color:#141414;}
 .spl-card{transition:border-color .18s ease,background .18s ease,box-shadow .18s ease;}
 .spl-card:hover{border-color:#111;background:#FAFAF8;}
-/* Dark hero section card overrides */
-.spl-hero .spl-card:hover{border-color:#555;background:#2a2a2a;}
 /* Hide the sticky hero's own scrollbar (the dark thumb showed as a black line down the middle). */
 .spl-aside{scrollbar-width:none;-ms-overflow-style:none;}
 .spl-aside::-webkit-scrollbar{width:0;height:0;display:none;}
