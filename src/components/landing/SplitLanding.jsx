@@ -770,21 +770,21 @@ export default function SplitLanding({ onEnter }) {
           </div>
         </section>
 
-        {/* 03 sandboxes — dark */}
-        <section data-panel="2" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', background: '#111', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+        {/* 03 sandboxes — white */}
+        <section data-panel="2" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', borderBottom: `1px solid ${line}`, background: bg }}>
           <div style={{ maxWidth: 680 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 14, fontFamily: SANS }}>
               <span style={{ fontSize: 16, letterSpacing: '-0.01em', color: aws, fontWeight: 700 }}>03</span>
-              <span style={{ fontSize: 16, letterSpacing: '-0.02em', color: '#fff', fontWeight: 700 }}>Safe, isolated sandboxes</span>
+              <span style={{ fontSize: 16, letterSpacing: '-0.02em', color: ink, fontWeight: 700 }}>Safe, isolated sandboxes</span>
             </div>
-            <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 14px', color: '#fff' }}>Every task runs in its own sandbox. Nothing touches prod until you say so.</h2>
-            <p style={{ fontSize: 13.5, lineHeight: 1.6, letterSpacing: '-0.01em', color: '#bbb', margin: '0 0 28px', fontWeight: 400, maxWidth: 560 }}>Ephemeral filesystem, scoped and time-boxed credentials, an egress allowlist. Review the diff, then approve to apply.</p>
-            <div data-gsap="sandbox" style={{ marginBottom: 18 }}><SandboxDiagram dark /></div>
-            <div style={{ border: '1px solid #333', borderRadius: 8, background: '#151515' }}>
+            <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 14px', color: ink }}>Every task runs in its own sandbox. Nothing touches prod until you say so.</h2>
+            <p style={{ fontSize: 13.5, lineHeight: 1.6, letterSpacing: '-0.01em', color: mut, margin: '0 0 28px', fontWeight: 400, maxWidth: 560 }}>Ephemeral filesystem, scoped and time-boxed credentials, an egress allowlist. Review the diff, then approve to apply.</p>
+            <div data-gsap="sandbox" style={{ marginBottom: 18 }}><SandboxDiagram /></div>
+            <div style={{ border: `1px solid ${line}`, borderRadius: 8, background: bg2 }}>
               {SPECS.map(([k, v], i) => (
-                <div key={k} style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 20, padding: '15px 22px', borderBottom: i < SPECS.length - 1 ? '1px solid #333' : 'none' }}>
-                  <span style={{ fontSize: 12, letterSpacing: '0.04em', color: '#fff', minWidth: 120, fontFamily: MONO }}>{k}</span>
-                  <span style={{ fontSize: 12.5, color: '#bbb', textAlign: 'right', letterSpacing: '-0.01em' }}>{v}</span>
+                <div key={k} style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 20, padding: '15px 22px', borderBottom: i < SPECS.length - 1 ? `1px solid ${line}` : 'none' }}>
+                  <span style={{ fontSize: 12, letterSpacing: '0.04em', color: ink, minWidth: 120, fontFamily: MONO }}>{k}</span>
+                  <span style={{ fontSize: 12.5, color: mut, textAlign: 'right', letterSpacing: '-0.01em' }}>{v}</span>
                 </div>
               ))}
             </div>
