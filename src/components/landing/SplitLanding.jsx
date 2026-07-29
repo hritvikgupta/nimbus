@@ -730,17 +730,17 @@ export default function SplitLanding({ onEnter }) {
       {/* ── RIGHT, scrolling panels ── */}
       <main ref={mainRef} style={{ flex: '1 1 0', minWidth: 0 }}>
 
-        {/* 01 any cloud, hub & spoke diagram leads — dark */}
-        <section data-panel="0" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', background: '#111', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+        {/* 01 any cloud, hub & spoke diagram leads — white */}
+        <section data-panel="0" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', background: bg, borderBottom: `1px solid ${line}` }}>
           <div style={{ maxWidth: 860 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 14, fontFamily: SANS }}>
               <span style={{ fontSize: 16, letterSpacing: '-0.01em', color: aws, fontWeight: 700 }}>01</span>
-              <span style={{ fontSize: 16, letterSpacing: '-0.02em', color: '#fff', fontWeight: 700 }}>Works with any cloud</span>
+              <span style={{ fontSize: 16, letterSpacing: '-0.02em', color: ink, fontWeight: 700 }}>Works with any cloud</span>
             </div>
-            <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 14px', color: '#fff' }}>Wherever you ship, Nimbus connects.</h2>
-            <p style={{ fontSize: 13.5, lineHeight: 1.6, letterSpacing: '-0.01em', color: '#bbb', margin: '0 0 28px', fontWeight: 400, maxWidth: 560 }}>AWS, GCP, Azure, and the rest, through scoped, revocable credentials. No agent to install. Every connected cloud flows through Nimbus into analyzed, gated, verified action.</p>
+            <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 14px', color: ink }}>Wherever you ship, Nimbus connects.</h2>
+            <p style={{ fontSize: 13.5, lineHeight: 1.6, letterSpacing: '-0.01em', color: mut, margin: '0 0 28px', fontWeight: 400, maxWidth: 560 }}>AWS, GCP, Azure, and the rest, through scoped, revocable credentials. No agent to install. Every connected cloud flows through Nimbus into analyzed, gated, verified action.</p>
             <div style={{ margin: '8px 0 0' }}>
-              <HubSpoke dark />
+              <HubSpoke />
             </div>
           </div>
         </section>
