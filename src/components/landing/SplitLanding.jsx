@@ -791,22 +791,22 @@ export default function SplitLanding({ onEnter }) {
           </div>
         </section>
 
-        {/* 04 design on a canvas — dark */}
-        <section data-panel="3" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', background: '#111', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+        {/* 04 design on a canvas — white */}
+        <section data-panel="3" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', borderBottom: `1px solid ${line}`, background: bg2 }}>
           <div style={{ maxWidth: 820 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 14, fontFamily: SANS }}>
               <span style={{ fontSize: 16, letterSpacing: '-0.01em', color: aws, fontWeight: 700 }}>04</span>
-              <span style={{ fontSize: 16, letterSpacing: '-0.02em', color: '#fff', fontWeight: 700 }}>Design on a canvas</span>
+              <span style={{ fontSize: 16, letterSpacing: '-0.02em', color: ink, fontWeight: 700 }}>Design on a canvas</span>
             </div>
-            <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 14px', color: '#fff' }}>Describe what you want. Nimbus draws the architecture.</h2>
-            <p style={{ fontSize: 13.5, lineHeight: 1.6, letterSpacing: '-0.01em', color: '#bbb', margin: '0 0 28px', fontWeight: 400, maxWidth: 560 }}>It lays out every tier as connected nodes on a live canvas, load balancer, app, database, cache, storage, that you can drag, rewire, and edit before a single resource is provisioned.</p>
-            <DesignCanvas dark />
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 1, background: '#333', border: '1px solid #333', marginTop: 22 }}>
+            <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 14px', color: ink }}>Describe what you want. Nimbus draws the architecture.</h2>
+            <p style={{ fontSize: 13.5, lineHeight: 1.6, letterSpacing: '-0.01em', color: mut, margin: '0 0 28px', fontWeight: 400, maxWidth: 560 }}>It lays out every tier as connected nodes on a live canvas, load balancer, app, database, cache, storage, that you can drag, rewire, and edit before a single resource is provisioned.</p>
+            <DesignCanvas />
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 1, border: `1px solid ${line}`, marginTop: 22, background: line }}>
               {CAPS.slice(0, 2).map((c) => (
-                <div key={c.title} className="spl-card" style={{ background: '#1e1e1e', padding: 22 }}>
-                  <div style={{ fontSize: 13, color: '#fff', marginBottom: 10, fontFamily: MONO }}>{c.glyph}</div>
-                  <h3 style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 8px', color: '#fff' }}>{c.title}</h3>
-                  <p style={{ fontSize: 12, lineHeight: 1.55, letterSpacing: '-0.01em', color: '#bbb', margin: 0 }}>{c.body}</p>
+                <div key={c.title} className="spl-card" style={{ background: bg, padding: 22 }}>
+                  <div style={{ fontSize: 13, color: ink, marginBottom: 10, fontFamily: MONO }}>{c.glyph}</div>
+                  <h3 style={{ fontSize: 14, fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 8px', color: ink }}>{c.title}</h3>
+                  <p style={{ fontSize: 12, lineHeight: 1.55, letterSpacing: '-0.01em', color: mut, margin: 0 }}>{c.body}</p>
                 </div>
               ))}
             </div>
