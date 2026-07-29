@@ -251,23 +251,6 @@ export default function Landing({ onEnter }) {
         </div>
       </div>
 
-      {/* FOOTER */}
-      <div style={{ borderTop: `1px solid ${line}`, background: '#fff' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '50px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 40 }}>
-          <div style={{ maxWidth: 280 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 13 }}>
-              <Logo size={24} /><span style={{ fontSize: 16, fontWeight: 700, letterSpacing: '-0.02em', color: ink }}>Nimbus</span>
-            </div>
-            <div style={{ fontSize: 13, color: sub, lineHeight: 1.55 }}>The autonomous engineer that provisions, diagnoses, and operates your cloud.</div>
-          </div>
-          <div style={{ display: 'flex', gap: 64, fontSize: 13 }}>
-            <FooterCol title="Product" links={[['How it works', '#how'], ['Integrations', '#integrations'], ['Pricing', '#pricing']]} />
-            <FooterCol title="Company" links={[['About', '#'], ['Careers', '#'], ['Blog', '#']]} />
-            <FooterCol title="Resources" links={[['Security', '#security'], ['Docs', '#'], ['Status', '#']]} />
-          </div>
-        </div>
-        <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 32px 36px', fontSize: 12.5, color: sub }}>© 2026 Nimbus. All rights reserved.</div>
-      </div>
       </div>
     </div>
   )
@@ -438,11 +421,4 @@ function PriceCard({ name, price, unit, note, items, cta, featured, onEnter }) {
   )
 }
 
-function FooterCol({ title, links }) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 11 }}>
-      <span style={{ color: sub, fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 2 }}>{title}</span>
-      {links.map(([t, h]) => <a key={t} href={h} className="lp-link" style={{ color: mut }}>{t}</a>)}
-    </div>
-  )
-}
+
