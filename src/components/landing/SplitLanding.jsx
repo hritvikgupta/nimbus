@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import '../../styles/landing.css'
+import useGsapAnimations from '../../lib/useGsapAnimations.js'
 
 /* Nimbus split-view landing, a sticky left hero + a right column of full-height panels that the
    left nav tracks as you scroll. Layout is adapted from the reference; theme is OUR flat
@@ -135,7 +136,7 @@ const WORKFLOW = [
 
 const META = { you: { txt: 'you', col: ink }, agent: { txt: 'agent', col: mut }, fix: { txt: 'fix', col: ink }, ok: { txt: 'ok', col: '#1a7f4b' } }
 
-function Terminal() {
+function Terminal({ dark }) {
   const [done, setDone] = useState(0)
   const [partial, setPartial] = useState('')
   const tRef = useRef()
@@ -152,10 +153,14 @@ function Terminal() {
     tRef.current = setTimeout(tick, 500)
     return () => clearTimeout(tRef.current)
   }, [])
+  const bodyCol = dark ? '#ddd' : ink
+  const labelColors = dark
+    ? { you: '#ddd', agent: '#999', fix: '#ddd', ok: '#1a7f4b' }
+    : { you: ink, agent: mut, fix: ink, ok: '#1a7f4b' }
   const Row = ({ k, body, cursor }) => (
     <div style={{ display: 'flex', gap: 12, marginBottom: 4, alignItems: 'baseline' }}>
-      <span style={{ flex: '0 0 auto', width: 42, color: META[k].col, fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', paddingTop: 1 }}>{META[k].txt}</span>
-      <span style={{ flex: 1, color: k === 'you' ? ink : META[k].col }}>{body}{cursor && <span className="spl-cursor" />}</span>
+      <span style={{ flex: '0 0 auto', width: 42, color: labelColors[k], fontSize: 10, letterSpacing: '0.12em', textTransform: 'uppercase', paddingTop: 1 }}>{META[k].txt}</span>
+      <span style={{ flex: 1, color: k === 'you' ? bodyCol : labelColors[k] }}>{body}{cursor && <span className="spl-cursor" style={dark ? { background: '#ddd' } : undefined} />}</span>
     </div>
   )
   const rows = []
@@ -183,7 +188,7 @@ function HubSpoke() {
     return () => { window.removeEventListener('resize', fit); ro?.disconnect() }
   }, [])
   return (
-    <div ref={wrapRef} style={{ position: 'relative', width: '100%', overflow: 'hidden' }}>
+    <div ref={wrapRef} data-gsap="hubspoke" style={{ position: 'relative', width: '100%', overflow: 'hidden' }}>
       <div ref={innerRef} style={{ position: 'relative', width: 1100, height: 600, transformOrigin: 'top left' }}>
         <svg viewBox="0 0 1100 600" width="1100" height="600" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible' }} aria-hidden="true">
           <g fill="none" stroke="#7d7d7d" strokeWidth="1.7" strokeDasharray="5 7" strokeLinecap="round" style={{ animation: 'dashflow 0.9s linear infinite' }}>
@@ -232,25 +237,32 @@ function HubSpoke() {
 
 // Sandbox isolation diagram, repo → isolated sandbox (ephemeral fs / scoped creds / egress
 // allowlist) → approval gate → prod. Themed flat black/white with the dashed-flow animation.
-function SandboxDiagram() {
-  const box = { background: bg, border: `1px solid ${line2}`, borderRadius: 8, padding: '12px 14px', textAlign: 'center' }
-  const tag = { fontSize: 10, letterSpacing: '0.06em', color: faint, fontFamily: MONO }
-  const chip = { fontSize: 11.5, color: mut, border: `1px solid ${line}`, borderRadius: 6, padding: '6px 10px', background: bg }
+function SandboxDiagram({ dark }) {
+  const col = dark ? '#fff' : ink
+  const colMuted = dark ? '#bbb' : mut
+  const colFaint = dark ? '#888' : faint
+  const border = dark ? '#333' : line
+  const border2 = dark ? '#444' : line2
+  const boxBg = dark ? '#1e1e1e' : bg
+  const bg2Color = dark ? '#151515' : bg2
+  const box = { background: boxBg, border: `1px solid ${border2}`, borderRadius: 8, padding: '12px 14px', textAlign: 'center' }
+  const tag = { fontSize: 10, letterSpacing: '0.06em', color: colFaint, fontFamily: MONO }
+  const chip = { fontSize: 11.5, color: colMuted, border: `1px solid ${border}`, borderRadius: 6, padding: '6px 10px', background: boxBg }
   return (
-    <div style={{ border: `1px solid ${line}`, borderRadius: 10, background: bg2, padding: 24, display: 'flex', alignItems: 'stretch', gap: 16 }}>
+    <div style={{ border: `1px solid ${border}`, borderRadius: 10, background: bg2Color, padding: 24, display: 'flex', alignItems: 'stretch', gap: 16 }}>
       {/* repo */}
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 6, flex: '0 0 auto', width: 96 }}>
-        <div style={box}><div style={tag}>Your code</div><div style={{ fontSize: 12, color: ink, marginTop: 4, fontFamily: MONO }}>stax</div></div>
+        <div style={box}><div style={tag}>Your code</div><div style={{ fontSize: 12, color: col, marginTop: 4, fontFamily: MONO }}>stax</div></div>
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', color: faint }}><span className="spl-flow" /></div>
+      <div style={{ display: 'flex', alignItems: 'center', color: colFaint }}><span className="spl-flow" /></div>
 
       {/* sandbox, dashed isolation boundary */}
-      <div style={{ flex: 1, minWidth: 0, border: `1.5px dashed ${faint}`, borderRadius: 10, padding: '16px 16px 14px', position: 'relative', background: 'repeating-linear-gradient(135deg, transparent, transparent 9px, rgba(0,0,0,0.012) 9px, rgba(0,0,0,0.012) 18px)' }}>
-        <div style={{ position: 'absolute', top: -9, left: 14, background: bg2, padding: '0 7px', fontSize: 11, color: ink, fontWeight: 600 }}>A private, throwaway computer</div>
+      <div style={{ flex: 1, minWidth: 0, border: `1.5px dashed ${colFaint}`, borderRadius: 10, padding: '16px 16px 14px', position: 'relative', background: dark ? 'repeating-linear-gradient(135deg, transparent, transparent 9px, rgba(255,255,255,0.03) 9px, rgba(255,255,255,0.03) 18px)' : 'repeating-linear-gradient(135deg, transparent, transparent 9px, rgba(0,0,0,0.012) 9px, rgba(0,0,0,0.012) 18px)' }}>
+        <div style={{ position: 'absolute', top: -9, left: 14, background: bg2Color, padding: '0 7px', fontSize: 11, color: col, fontWeight: 600 }}>A private, throwaway computer</div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 12 }}>
-          <span style={{ ...box, padding: '8px 12px', fontSize: 12, color: ink }}>Nimbus does the work here</span>
-          <span style={{ color: faint, fontSize: 13 }}>→</span>
-          <span style={{ ...chip, color: faint }}>deleted when done</span>
+          <span style={{ ...box, padding: '8px 12px', fontSize: 12, color: col }}>Nimbus does the work here</span>
+          <span style={{ color: colFaint, fontSize: 13 }}>→</span>
+          <span style={{ ...chip, color: colFaint }}>deleted when done</span>
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, justifyContent: 'center' }}>
           <span style={chip}>A copy of your code, not the real thing</span>
@@ -262,11 +274,11 @@ function SandboxDiagram() {
 
       {/* approval gate → prod */}
       <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', justifyContent: 'center', gap: 4, flex: '0 0 auto', width: 72 }}>
-        <span style={{ fontSize: 10.5, color: ink, fontWeight: 600, textAlign: 'center', lineHeight: 1.3 }}>you<br />approve</span>
-        <span style={{ fontSize: 16, color: ink }}>→</span>
+        <span style={{ fontSize: 10.5, color: col, fontWeight: 600, textAlign: 'center', lineHeight: 1.3 }}>you<br />approve</span>
+        <span style={{ fontSize: 16, color: col }}>→</span>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flex: '0 0 auto', width: 92 }}>
-        <div style={{ ...box, borderColor: ink }}><div style={tag}>Live cloud</div><div style={{ fontSize: 12, color: ink, marginTop: 4 }}>your real apps</div></div>
+        <div style={{ ...box, borderColor: col }}><div style={tag}>Live cloud</div><div style={{ fontSize: 12, color: col, marginTop: 4 }}>your real apps</div></div>
       </div>
     </div>
   )
@@ -309,7 +321,7 @@ function DesignCanvas() {
     <div style={{ border: `1px solid ${line}`, borderRadius: 12, background: '#fff', backgroundImage: 'radial-gradient(#e6e6e2 1px, transparent 1px)', backgroundSize: '20px 20px', padding: 16, position: 'relative', overflow: 'hidden' }}>
       <span style={{ position: 'absolute', top: 12, left: 16, fontSize: 10.5, color: faint, fontFamily: MONO, letterSpacing: '0.06em', zIndex: 2 }}>canvas · drag to rewire</span>
       <span style={{ position: 'absolute', top: 11, right: 14, fontSize: 11, color: ink, fontWeight: 600, background: bg2, border: `1px solid ${line}`, borderRadius: 999, padding: '3px 11px', zIndex: 2 }}>+ Add resource</span>
-      <div ref={wrapRef} style={{ position: 'relative', width: '100%', overflow: 'hidden', marginTop: 8 }}>
+      <div ref={wrapRef} data-gsap="canvas" style={{ position: 'relative', width: '100%', overflow: 'hidden', marginTop: 8 }}>
         <div ref={innerRef} style={{ position: 'relative', width: CW, height: CH, transformOrigin: 'top left' }}>
           <svg width={CW} height={CH} style={{ position: 'absolute', inset: 0 }} aria-hidden="true">
             <g fill="none" stroke="#b3b3b3" strokeWidth="1.6" strokeDasharray="5 6" strokeLinecap="round" style={{ animation: 'dashflow .9s linear infinite' }}>
@@ -317,7 +329,7 @@ function DesignCanvas() {
             </g>
           </svg>
           {CANVAS_NODES.map((n, i) => (
-            <div key={i} style={{ position: 'absolute', left: n.x, top: n.y, width: NODEW, background: '#fff', border: `1px solid ${line2}`, borderRadius: 12, padding: '11px 13px', boxShadow: '0 8px 22px rgba(0,0,0,0.07)' }}>
+            <div key={i} className="CanvasNode" style={{ position: 'absolute', left: n.x, top: n.y, width: NODEW, background: '#fff', border: `1px solid ${line2}`, borderRadius: 12, padding: '11px 13px', boxShadow: '0 8px 22px rgba(0,0,0,0.07)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
                 <span style={{ fontSize: 9, letterSpacing: '0.5px', fontWeight: 700, color: mut, background: bg2, borderRadius: 5, padding: '1px 6px', fontFamily: MONO }}>{n.cloud}</span>
                 <span style={{ fontSize: 10, color: faint, fontFamily: MONO }}>{n.type}</span>
@@ -356,7 +368,7 @@ function CostSection() {
           <div key={k} style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12 }}>
             <span style={{ fontSize: 12.5, color: mut, width: 130, flex: '0 0 auto' }}>{k}</span>
             <span style={{ flex: 1, height: 7, background: bg2, borderRadius: 999, overflow: 'hidden' }}>
-              <span style={{ display: 'block', height: '100%', width: `${(v / max) * 100}%`, background: '#141414', borderRadius: 999 }} />
+              <span className="costBar" data-width={`${(v / max) * 100}`} style={{ display: 'block', height: '100%', width: '0%', background: '#141414', borderRadius: 999 }} />
             </span>
             <span style={{ fontSize: 12.5, color: ink, fontFamily: MONO, width: 44, textAlign: 'right', flex: '0 0 auto' }}>{label}</span>
           </div>
@@ -590,6 +602,8 @@ export default function SplitLanding({ onEnter }) {
     return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
+  useGsapAnimations(mainRef)
+
   const scrollTo = (i) => {
     const p = mainRef.current?.querySelector(`[data-panel="${i}"]`)
     if (p) window.scrollTo({ top: p.getBoundingClientRect().top + window.scrollY, behavior: 'smooth' })
@@ -599,41 +613,41 @@ export default function SplitLanding({ onEnter }) {
     <div style={{ fontFamily: SANS, WebkitFontSmoothing: 'antialiased', background: bg, color: ink, width: '100%' }}>
 
       {/* ══ ADVANCED HERO (full screen) ══ */}
-      <section style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: bg, position: 'relative' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '22px 40px' }}>
+      <section className="spl-hero" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: '#111', position: 'relative' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '22px 40px', background: '#111', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Logo size={30} /><span style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.02em', color: ink }}>Nimbus</span>
+            <Logo size={30} /><span style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.02em', color: '#fff' }}>Nimbus</span>
           </div>
           <div style={{ display: 'flex', gap: 10 }}>
-            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="spl-btn spl-btn-ghost" style={{ fontSize: 12.5, border: `1px solid ${line2}`, color: mut, padding: '9px 14px', letterSpacing: '-0.01em', background: bg, borderRadius: 8, cursor: 'pointer', fontFamily: SANS, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 7 }}>
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="spl-btn" style={{ fontSize: 12.5, border: '1px solid rgba(255,255,255,0.2)', color: '#ccc', padding: '9px 14px', letterSpacing: '-0.01em', background: 'rgba(255,255,255,0.06)', borderRadius: 8, cursor: 'pointer', fontFamily: SANS, textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 7 }}>
               <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 012-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
               GitHub
             </a>
-            <a href={DOCS_URL} target="_blank" rel="noopener noreferrer" className="spl-btn spl-btn-ghost" style={{ fontSize: 12.5, border: `1px solid ${line2}`, color: mut, padding: '9px 16px', letterSpacing: '-0.01em', background: bg, borderRadius: 8, cursor: 'pointer', fontFamily: SANS, textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>Docs</a>
+            <a href={DOCS_URL} target="_blank" rel="noopener noreferrer" className="spl-btn" style={{ fontSize: 12.5, border: '1px solid rgba(255,255,255,0.2)', color: '#ccc', padding: '9px 16px', letterSpacing: '-0.01em', background: 'rgba(255,255,255,0.06)', borderRadius: 8, cursor: 'pointer', fontFamily: SANS, textDecoration: 'none', display: 'inline-flex', alignItems: 'center' }}>Docs</a>
             <button onClick={bookDemo} className="spl-btn spl-btn-dark" style={{ fontSize: 12.5, background: aws, color: awsInk, fontWeight: 600, padding: '9px 16px', letterSpacing: '-0.01em', border: 'none', borderRadius: 8, cursor: 'pointer', fontFamily: SANS }}>book a demo →</button>
           </div>
         </div>
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '10px 24px 56px', maxWidth: 1000, margin: '0 auto', width: '100%' }}>
-          <div style={{ fontSize: 14, color: mut, marginBottom: 18, fontFamily: SANS }}>The cloud engineer agent for <b style={{ color: ink }}>AWS</b> &amp; <b style={{ color: ink }}>GCP</b></div>
-          <h1 style={{ fontSize: 'clamp(34px,5vw,64px)', fontWeight: 500, letterSpacing: '-0.05em', lineHeight: 1.05, margin: '0 0 20px', color: ink, maxWidth: 900 }}>
+          <div style={{ fontSize: 14, color: '#bbb', marginBottom: 18, fontFamily: SANS }}>The cloud engineer agent for <b style={{ color: '#fff' }}>AWS</b> &amp; <b style={{ color: '#fff' }}>GCP</b></div>
+          <h1 style={{ fontSize: 'clamp(34px,5vw,64px)', fontWeight: 500, letterSpacing: '-0.05em', lineHeight: 1.05, margin: '0 0 20px', color: '#fff', maxWidth: 900 }}>
             Connect your agent to{' '}
             <span style={{ color: aws, fontFamily: PIXEL, fontWeight: 600, letterSpacing: '0.01em', fontSize: '0.9em', whiteSpace: 'nowrap' }}>
               <img src="/brand/amazonwebservices.svg" alt="" style={{ height: '0.72em', width: 'auto', verticalAlign: '-0.02em', marginRight: '0.18em' }} />AWS{' '}&amp;{' '}<img src="/brand/googlecloud-color.svg" alt="" style={{ height: '0.66em', width: 'auto', verticalAlign: '0.02em', marginLeft: '0.16em', marginRight: '0.18em' }} />GCP.
             </span>
           </h1>
-          <p style={{ fontSize: 'clamp(15px,1.6vw,18px)', color: mut, lineHeight: 1.5, letterSpacing: '-0.01em', maxWidth: 600, margin: '0 0 38px' }}>
+          <p style={{ fontSize: 'clamp(15px,1.6vw,18px)', color: '#bbb', lineHeight: 1.5, letterSpacing: '-0.01em', maxWidth: 600, margin: '0 0 38px' }}>
             Connect your cloud and just talk to it. Nimbus designs infrastructure, diagnoses incidents, tracks spend, and ships code, all with your approval.
           </p>
           {/* hero anchor (invisible, reserves the box's space; the fixed box overlays it) */}
           <div ref={heroSlotRef} style={{ width: 'min(680px,100%)', visibility: 'hidden' }}><PromptBox interactive={false} /></div>
           {/* example prompts */}
           <div style={{ width: 'min(680px,100%)', marginTop: 22 }}>
-            <div style={{ fontSize: 11, color: faint, textAlign: 'left', marginBottom: 10, fontFamily: MONO, letterSpacing: '0.1em' }}>TRY ASKING</div>
+            <div style={{ fontSize: 11, color: '#999', textAlign: 'left', marginBottom: 10, fontFamily: MONO, letterSpacing: '0.1em' }}>TRY ASKING</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               {HERO_EXAMPLES.map(([t, s], i) => (
-                <div key={i} onClick={onEnter} className="spl-card" style={{ textAlign: 'left', border: `1px solid ${line}`, borderRadius: 10, padding: '12px 14px', background: bg2, cursor: 'pointer' }}>
-                  <div style={{ fontSize: 10.5, color: faint, fontFamily: MONO, marginBottom: 4, letterSpacing: '0.04em' }}>{t}</div>
-                  <div style={{ fontSize: 12.5, color: ink, letterSpacing: '-0.01em' }}>{s}</div>
+                <div key={i} onClick={onEnter} className="spl-card" style={{ textAlign: 'left', border: '1px solid #333', borderRadius: 10, padding: '12px 14px', background: '#1e1e1e', cursor: 'pointer' }}>
+                  <div style={{ fontSize: 10.5, color: '#999', fontFamily: MONO, marginBottom: 4, letterSpacing: '0.04em' }}>{t}</div>
+                  <div style={{ fontSize: 12.5, color: '#fff', letterSpacing: '-0.01em' }}>{s}</div>
                 </div>
               ))}
             </div>
@@ -702,40 +716,46 @@ export default function SplitLanding({ onEnter }) {
           </div>
         </section>
 
-        {/* 02 connect a machine */}
-        <section data-panel="1" style={panelStyle(true)}>
+        {/* 02 connect a machine — dark */}
+        <section data-panel="1" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', background: '#111', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
           <div style={{ maxWidth: 760 }}>
-            {eyebrow('02', 'Connect a machine')}
-            {h2('Run agents on any machine you can reach.')}
-            {lead("Bring your own box, pair on a teammate's, or rent an ephemeral one, each attaches over a native Claude or Codex session.")}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 14, fontFamily: SANS }}>
+              <span style={{ fontSize: 16, letterSpacing: '-0.01em', color: aws, fontWeight: 700 }}>02</span>
+              <span style={{ fontSize: 16, letterSpacing: '-0.02em', color: '#fff', fontWeight: 700 }}>Connect a machine</span>
+            </div>
+            <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 14px', color: '#fff' }}>Run agents on any machine you can reach.</h2>
+            <p style={{ fontSize: 13.5, lineHeight: 1.6, letterSpacing: '-0.01em', color: '#bbb', margin: '0 0 28px', fontWeight: 400, maxWidth: 560 }}>Bring your own box, pair on a teammate's, or rent an ephemeral one, each attaches over a native Claude or Codex session.</p>
+            <div data-gsap="runtimes" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
               {RUNTIMES.map((r) => (
-                <div key={r.tag} className="spl-card" style={{ background: bg, border: `1px solid ${line}`, borderRadius: 8, padding: 22 }}>
+                <div key={r.tag} className="spl-card" style={{ background: '#1e1e1e', border: '1px solid #333', borderRadius: 8, padding: 22 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-                    <span style={{ fontSize: 10.5, letterSpacing: '0.14em', color: faint, textTransform: 'uppercase', fontFamily: MONO }}>{r.tag}</span>
-                    <span style={{ width: 26, height: 26, border: `1px solid ${line2}`, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, color: ink }}>{r.glyph}</span>
+                    <span style={{ fontSize: 10.5, letterSpacing: '0.14em', color: '#999', textTransform: 'uppercase', fontFamily: MONO }}>{r.tag}</span>
+                    <span style={{ width: 26, height: 26, border: '1px solid #444', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, color: '#fff' }}>{r.glyph}</span>
                   </div>
-                  <h3 style={{ fontSize: 14.5, fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 9px', color: ink }}>{r.title}</h3>
-                  <p style={{ fontSize: 12, lineHeight: 1.55, letterSpacing: '-0.01em', color: mut, margin: '0 0 16px' }}>{r.body}</p>
-                  <div style={{ borderTop: `1px solid ${line}`, paddingTop: 12, fontSize: 11, color: ink, letterSpacing: '-0.01em', fontFamily: MONO }}>{r.cmd}</div>
+                  <h3 style={{ fontSize: 14.5, fontWeight: 700, letterSpacing: '-0.02em', margin: '0 0 9px', color: '#fff' }}>{r.title}</h3>
+                  <p style={{ fontSize: 12, lineHeight: 1.55, letterSpacing: '-0.01em', color: '#bbb', margin: '0 0 16px' }}>{r.body}</p>
+                  <div style={{ borderTop: '1px solid #333', paddingTop: 12, fontSize: 11, color: '#ccc', letterSpacing: '-0.01em', fontFamily: MONO }}>{r.cmd}</div>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        {/* 03 sandboxes */}
-        <section data-panel="2" style={panelStyle(false)}>
+        {/* 03 sandboxes — dark */}
+        <section data-panel="2" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', background: '#111', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
           <div style={{ maxWidth: 680 }}>
-            {eyebrow('03', 'Safe, isolated sandboxes')}
-            {h2('Every task runs in its own sandbox. Nothing touches prod until you say so.')}
-            {lead('Ephemeral filesystem, scoped and time-boxed credentials, an egress allowlist. Review the diff, then approve to apply.')}
-            <div style={{ marginBottom: 18 }}><SandboxDiagram /></div>
-            <div style={{ border: `1px solid ${line}`, borderRadius: 8, background: bg2 }}>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 14, fontFamily: SANS }}>
+              <span style={{ fontSize: 16, letterSpacing: '-0.01em', color: aws, fontWeight: 700 }}>03</span>
+              <span style={{ fontSize: 16, letterSpacing: '-0.02em', color: '#fff', fontWeight: 700 }}>Safe, isolated sandboxes</span>
+            </div>
+            <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 14px', color: '#fff' }}>Every task runs in its own sandbox. Nothing touches prod until you say so.</h2>
+            <p style={{ fontSize: 13.5, lineHeight: 1.6, letterSpacing: '-0.01em', color: '#bbb', margin: '0 0 28px', fontWeight: 400, maxWidth: 560 }}>Ephemeral filesystem, scoped and time-boxed credentials, an egress allowlist. Review the diff, then approve to apply.</p>
+            <div data-gsap="sandbox" style={{ marginBottom: 18 }}><SandboxDiagram dark /></div>
+            <div style={{ border: '1px solid #333', borderRadius: 8, background: '#151515' }}>
               {SPECS.map(([k, v], i) => (
-                <div key={k} style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 20, padding: '15px 22px', borderBottom: i < SPECS.length - 1 ? `1px solid ${line}` : 'none' }}>
-                  <span style={{ fontSize: 12, letterSpacing: '0.04em', color: ink, minWidth: 120, fontFamily: MONO }}>{k}</span>
-                  <span style={{ fontSize: 12.5, color: mut, textAlign: 'right', letterSpacing: '-0.01em' }}>{v}</span>
+                <div key={k} style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 20, padding: '15px 22px', borderBottom: i < SPECS.length - 1 ? '1px solid #333' : 'none' }}>
+                  <span style={{ fontSize: 12, letterSpacing: '0.04em', color: '#fff', minWidth: 120, fontFamily: MONO }}>{k}</span>
+                  <span style={{ fontSize: 12.5, color: '#bbb', textAlign: 'right', letterSpacing: '-0.01em' }}>{v}</span>
                 </div>
               ))}
             </div>
@@ -763,7 +783,7 @@ export default function SplitLanding({ onEnter }) {
 
         {/* 05 cost & savings */}
         <section data-panel="4" style={panelStyle(false)}>
-          <div style={{ maxWidth: 720 }}>
+          <div data-gsap="cost" style={{ maxWidth: 720 }}>
             {eyebrow('05', 'Cost & savings')}
             {h2('See what it costs, before and after you build.')}
             {lead('Every design and every running stack comes with a live cost breakdown by service. Nimbus flags over-provisioned resources and proposes rightsizing you can apply with one approval.')}
@@ -782,7 +802,7 @@ export default function SplitLanding({ onEnter }) {
                 <span key={t} style={{ fontSize: 11, color: mut, border: `1px solid ${line2}`, padding: '5px 11px', borderRadius: 4, letterSpacing: '-0.01em', fontFamily: MONO }}>{t}</span>
               ))}
             </div>
-            <div style={{ border: `1px solid ${line2}`, borderRadius: 8, background: bg2, overflow: 'hidden' }}>
+            <div data-gsap="workflow" style={{ border: `1px solid ${line2}`, borderRadius: 8, background: bg2, overflow: 'hidden' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', borderBottom: `1px solid ${line}`, background: bg, fontFamily: MONO }}>
                 <span style={{ fontSize: 11, color: faint }}>heal-502.workflow.yaml</span>
                 <span style={{ fontSize: 10, color: ink, letterSpacing: '0.1em' }}>SAVED</span>
@@ -798,7 +818,7 @@ export default function SplitLanding({ onEnter }) {
 
         {/* 07 sessions board */}
         <section data-panel="6" style={panelStyle(false)}>
-          <div style={{ maxWidth: 900 }}>
+          <div data-gsap="sessions" style={{ maxWidth: 900 }}>
             {eyebrow('07', 'Sessions board')}
             {h2('Every session, on one board, from running to reviewed.')}
             {lead('Each task an agent runs becomes a session. Track them all in one place, what is running, what is waiting for review with a ready PR, and what is done, across every connected machine.')}
@@ -806,29 +826,32 @@ export default function SplitLanding({ onEnter }) {
           </div>
         </section>
 
-        {/* 08 live agent session + CTA */}
-        <section data-panel="7" style={{ ...panelStyle(true), borderBottom: 'none' }}>
+        {/* 08 live agent session + CTA — dark footer band */}
+        <section data-panel="7" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', background: '#111', borderBottom: 'none' }}>
           <div style={{ maxWidth: 680 }}>
-            {eyebrow('08', 'Live agent session')}
-            {h2('Hand it a problem in plain language. Watch it work.')}
-            {lead('No commands to memorize. You talk to the agent in a native Claude or Codex session; it reproduces, fixes, and reports back, every step visible.')}
-            <div style={{ border: `1px solid ${line2}`, borderRadius: 8, background: bg2, boxShadow: '0 22px 50px -28px rgba(0,0,0,0.25)', overflow: 'hidden', marginBottom: 40 }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '11px 14px', borderBottom: `1px solid ${line}`, background: bg, fontFamily: MONO }}>
-                <span style={{ width: 9, height: 9, borderRadius: '50%', background: line2 }} />
-                <span style={{ width: 9, height: 9, borderRadius: '50%', background: line2 }} />
-                <span style={{ width: 9, height: 9, borderRadius: '50%', background: line2 }} />
-                <span style={{ marginLeft: 8, fontSize: 11, color: faint }}>session, sandbox sbx-7f3a</span>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 14, fontFamily: SANS }}>
+              <span style={{ fontSize: 16, letterSpacing: '-0.01em', color: aws, fontWeight: 700 }}>08</span>
+              <span style={{ fontSize: 16, letterSpacing: '-0.02em', color: '#fff', fontWeight: 700 }}>Live agent session</span>
+            </div>
+            <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 14px', color: '#fff' }}>Hand it a problem in plain language. Watch it work.</h2>
+            <p style={{ fontSize: 13.5, lineHeight: 1.6, letterSpacing: '-0.01em', color: '#bbb', margin: '0 0 28px', fontWeight: 400, maxWidth: 560 }}>No commands to memorize. You talk to the agent in a native Claude or Codex session; it reproduces, fixes, and reports back, every step visible.</p>
+            <div data-gsap="terminal" style={{ border: '1px solid #333', borderRadius: 8, background: '#1a1a1a', boxShadow: '0 22px 50px -28px rgba(0,0,0,0.5)', overflow: 'hidden', marginBottom: 40 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '11px 14px', borderBottom: '1px solid #333', background: '#151515', fontFamily: MONO }}>
+                <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#444' }} />
+                <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#444' }} />
+                <span style={{ width: 9, height: 9, borderRadius: '50%', background: '#444' }} />
+                <span style={{ marginLeft: 8, fontSize: 11, color: '#999' }}>session, sandbox sbx-7f3a</span>
                 <span style={{ marginLeft: 'auto', fontSize: 10, color: '#1a7f4b', letterSpacing: '0.1em' }}>● live</span>
               </div>
-              <div style={{ padding: 18, fontSize: 12.5, lineHeight: 1.85, minHeight: 268, fontFamily: MONO }}><Terminal /></div>
+              <div style={{ padding: 18, fontSize: 12.5, lineHeight: 1.85, minHeight: 268, fontFamily: MONO, color: '#ddd' }}><Terminal dark /></div>
             </div>
-            <div style={{ borderTop: `1px solid ${line}`, paddingTop: 34 }}>
-              <h3 style={{ fontSize: 'clamp(20px,2.4vw,28px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.1, margin: '0 0 22px', color: ink }}>Point Nimbus at your cloud and watch it work.</h3>
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 34 }}>
+              <h3 style={{ fontSize: 'clamp(20px,2.4vw,28px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.1, margin: '0 0 22px', color: '#fff' }}>Point Nimbus at your cloud and watch it work.</h3>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <button onClick={onEnter} className="spl-btn spl-btn-dark" style={{ fontSize: 13, background: aws, color: awsInk, fontWeight: 600, padding: '11px 22px', letterSpacing: '-0.01em', border: 'none', borderRadius: 8, cursor: 'pointer', fontFamily: SANS }}>connect a machine →</button>
-                <button onClick={bookDemo} className="spl-btn spl-btn-ghost" style={{ fontSize: 13, border: `1px solid ${line2}`, color: mut, padding: '11px 22px', letterSpacing: '-0.01em', background: bg, borderRadius: 8, cursor: 'pointer', fontFamily: SANS }}>book a demo</button>
+                <button onClick={bookDemo} className="spl-btn" style={{ fontSize: 13, border: '1px solid rgba(255,255,255,0.25)', color: '#ccc', padding: '11px 22px', letterSpacing: '-0.01em', background: 'rgba(255,255,255,0.08)', borderRadius: 8, cursor: 'pointer', fontFamily: SANS }}>book a demo</button>
               </div>
-              <div style={{ marginTop: 40, display: 'flex', justifyContent: 'space-between', fontSize: 11, color: faint, letterSpacing: '0.02em', fontFamily: MONO }}>
+              <div style={{ marginTop: 40, display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#888', letterSpacing: '0.02em', fontFamily: MONO }}>
                 <span>© 2026 Nimbus Systems</span>
                 <span>soc2 · scoped access</span>
               </div>

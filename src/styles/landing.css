@@ -35,10 +35,13 @@
 .spl-navrow:hover{color:#141414;}
 .spl-card{transition:border-color .18s ease,background .18s ease,box-shadow .18s ease;}
 .spl-card:hover{border-color:#111;background:#FAFAF8;}
+/* Dark hero section card overrides */
+.spl-hero .spl-card:hover{border-color:#555;background:#2a2a2a;}
 /* Hide the sticky hero's own scrollbar (the dark thumb showed as a black line down the middle). */
 .spl-aside{scrollbar-width:none;-ms-overflow-style:none;}
 .spl-aside::-webkit-scrollbar{width:0;height:0;display:none;}
 .spl-btn{transition:filter .15s ease,background .15s ease,border-color .15s ease,color .15s ease;}
+.spl-btn:hover{filter:brightness(1.18);}
 .spl-btn-dark:hover{background:#E88A00;}
 .spl-btn-ghost:hover{border-color:#FF9900;color:#141414;background:rgba(255,153,0,0.08);}
 .spl-flow{display:block;width:22px;height:0;border-top:1.6px dashed #9a9a9a;background:none;animation:dashflow .9s linear infinite;}
