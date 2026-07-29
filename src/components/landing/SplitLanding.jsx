@@ -813,16 +813,16 @@ export default function SplitLanding({ onEnter }) {
           </div>
         </section>
 
-        {/* 05 cost & savings — dark */}
-        <section data-panel="4" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', background: '#111', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+        {/* 05 cost & savings — white */}
+        <section data-panel="4" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', background: bg, borderBottom: `1px solid ${line}` }}>
           <div data-gsap="cost" style={{ maxWidth: 720 }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 14, fontFamily: SANS }}>
               <span style={{ fontSize: 16, letterSpacing: '-0.01em', color: aws, fontWeight: 700 }}>05</span>
-              <span style={{ fontSize: 16, letterSpacing: '-0.02em', color: '#fff', fontWeight: 700 }}>Cost & savings</span>
+              <span style={{ fontSize: 16, letterSpacing: '-0.02em', color: ink, fontWeight: 700 }}>Cost & savings</span>
             </div>
-            <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 14px', color: '#fff' }}>See what it costs, before and after you build.</h2>
-            <p style={{ fontSize: 13.5, lineHeight: 1.6, letterSpacing: '-0.01em', color: '#bbb', margin: '0 0 28px', fontWeight: 400, maxWidth: 560 }}>Every design and every running stack comes with a live cost breakdown by service. Nimbus flags over-provisioned resources and proposes rightsizing you can apply with one approval.</p>
-            <CostSection dark />
+            <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 14px', color: ink }}>See what it costs, before and after you build.</h2>
+            <p style={{ fontSize: 13.5, lineHeight: 1.6, letterSpacing: '-0.01em', color: mut, margin: '0 0 28px', fontWeight: 400, maxWidth: 560 }}>Every design and every running stack comes with a live cost breakdown by service. Nimbus flags over-provisioned resources and proposes rightsizing you can apply with one approval.</p>
+            <CostSection />
           </div>
         </section>
 
