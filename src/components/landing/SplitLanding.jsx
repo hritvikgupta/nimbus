@@ -397,33 +397,42 @@ const SESSIONS_DONE = [
   ['ibi-verma-004', 'Add the GSAP animation in the landing page'],
   ['ibi-verma-004', 'Add GSAP animation, then open the pull request'],
 ]
-function SessionsBoard() {
+function SessionsBoard({ dark }) {
   const green = '#1a7f4b'
+  const cardBg = dark ? '#1e1e1e' : bg
+  const cardBorder = dark ? '#333' : line
+  const boardBg = dark ? '#151515' : bg2
+  const boardBorder = dark ? '#333' : line2
+  const tabBg = dark ? '#1a1a1a' : bg
+  const tabBorder = dark ? '#333' : line
+  const col = dark ? '#fff' : ink
+  const colMuted = dark ? '#bbb' : mut
+  const colFaint = dark ? '#888' : faint
   const Card = ({ machine, title, footer }) => (
-    <div className="spl-card" style={{ background: bg, border: `1px solid ${line}`, borderRadius: 10, padding: 15, marginBottom: 12 }}>
-      <div style={{ fontSize: 10.5, color: faint, fontFamily: MONO, marginBottom: 8 }}>{machine}</div>
-      <div style={{ fontSize: 12.5, color: ink, fontWeight: 600, letterSpacing: '-0.01em', lineHeight: 1.35, marginBottom: 13 }}>{title}</div>
+    <div className="spl-card" style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: 10, padding: 15, marginBottom: 12 }}>
+      <div style={{ fontSize: 10.5, color: colFaint, fontFamily: MONO, marginBottom: 8 }}>{machine}</div>
+      <div style={{ fontSize: 12.5, color: col, fontWeight: 600, letterSpacing: '-0.01em', lineHeight: 1.35, marginBottom: 13 }}>{title}</div>
       {footer}
     </div>
   )
   const Col = ({ title, count, children }) => (
     <div style={{ flex: 1, minWidth: 0 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 13 }}>
-        <span style={{ fontSize: 12.5, fontWeight: 700, color: ink, letterSpacing: '-0.01em' }}>{title}</span>
-        <span style={{ fontSize: 11.5, color: faint, fontFamily: MONO }}>{count}</span>
+        <span style={{ fontSize: 12.5, fontWeight: 700, color: col, letterSpacing: '-0.01em' }}>{title}</span>
+        <span style={{ fontSize: 11.5, color: colFaint, fontFamily: MONO }}>{count}</span>
       </div>
       {children}
     </div>
   )
   return (
-    <div style={{ border: `1px solid ${line2}`, borderRadius: 12, background: bg2, overflow: 'hidden', boxShadow: '0 22px 50px -28px rgba(0,0,0,0.22)' }}>
+    <div style={{ border: `1px solid ${boardBorder}`, borderRadius: 12, background: boardBg, overflow: 'hidden', boxShadow: dark ? '0 22px 50px -28px rgba(0,0,0,0.5)' : '0 22px 50px -28px rgba(0,0,0,0.22)' }}>
       {/* tabs */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 22, padding: '12px 18px', borderBottom: `1px solid ${line}`, background: bg, fontSize: 12.5, fontFamily: SANS }}>
-        <span style={{ color: ink, fontWeight: 600 }}>All</span>
-        <span style={{ color: faint }}>Running</span>
-        <span style={{ color: faint }}>Waiting for review</span>
-        <span style={{ color: faint }}>Done</span>
-        <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11.5, color: mut, border: `1px solid ${line2}`, borderRadius: 999, padding: '4px 11px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 22, padding: '12px 18px', borderBottom: `1px solid ${tabBorder}`, background: tabBg, fontSize: 12.5, fontFamily: SANS }}>
+        <span style={{ color: col, fontWeight: 600 }}>All</span>
+        <span style={{ color: colFaint }}>Running</span>
+        <span style={{ color: colFaint }}>Waiting for review</span>
+        <span style={{ color: colFaint }}>Done</span>
+        <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11.5, color: colMuted, border: `1px solid ${dark ? '#444' : line2}`, borderRadius: 999, padding: '4px 11px' }}>
           <span className="spl-live-dot" style={{ width: 6, height: 6, borderRadius: '50%', background: green }} /> 1 online
         </span>
       </div>
@@ -431,29 +440,29 @@ function SessionsBoard() {
       <div style={{ display: 'flex', gap: 18, padding: 18, alignItems: 'flex-start' }}>
         <Col title="Running" count="2">
           {SESSIONS_RUNNING.map(([m, t, agent, tools], i) => (
-            <div key={i} className="spl-card" style={{ background: bg, border: `1px solid ${line}`, borderRadius: 10, padding: 15, marginBottom: 12 }}>
+            <div key={i} className="spl-card" style={{ background: cardBg, border: `1px solid ${cardBorder}`, borderRadius: 10, padding: 15, marginBottom: 12 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                <span style={{ fontSize: 10.5, color: faint, fontFamily: MONO }}>{m}</span>
+                <span style={{ fontSize: 10.5, color: colFaint, fontFamily: MONO }}>{m}</span>
                 <span style={{ marginLeft: 'auto', display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 10, color: green, fontFamily: MONO, letterSpacing: '0.06em' }}>
                   <span className="spl-live-dot" style={{ width: 6, height: 6, borderRadius: '50%', background: green }} /> LIVE
                 </span>
               </div>
-              <div style={{ fontSize: 12.5, color: ink, fontWeight: 600, letterSpacing: '-0.01em', lineHeight: 1.35, marginBottom: 12 }}>{t}</div>
+              <div style={{ fontSize: 12.5, color: col, fontWeight: 600, letterSpacing: '-0.01em', lineHeight: 1.35, marginBottom: 12 }}>{t}</div>
               <div className="spl-prog" style={{ marginBottom: 10 }} />
-              <span style={{ fontSize: 11, color: mut, fontFamily: MONO }}>{agent} · {tools} tools</span>
+              <span style={{ fontSize: 11, color: colMuted, fontFamily: MONO }}>{agent} · {tools} tools</span>
             </div>
           ))}
         </Col>
         <Col title="Waiting for review" count="3">
           {SESSIONS_REVIEW.map(([m, t], i) => (
             <Card key={i} machine={m} title={t} footer={
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11.5, color: mut }}><span style={{ color: green }}>☁</span> PR is ready</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 11.5, color: colMuted }}><span style={{ color: green }}>☁</span> PR is ready</span>
             } />
           ))}
         </Col>
         <Col title="Done" count="2">
           {SESSIONS_DONE.map(([m, t], i) => (
-            <Card key={i} machine={m} title={t} footer={<span style={{ fontSize: 11.5, color: faint }}>▪ Stopped</span>} />
+            <Card key={i} machine={m} title={t} footer={<span style={{ fontSize: 11.5, color: colFaint }}>▪ Stopped</span>} />
           ))}
         </Col>
       </div>
@@ -816,13 +825,16 @@ export default function SplitLanding({ onEnter }) {
           </div>
         </section>
 
-        {/* 07 sessions board */}
-        <section data-panel="6" style={panelStyle(false)}>
+        {/* 07 sessions board — dark */}
+        <section data-panel="6" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '72px 56px', background: '#111', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
           <div data-gsap="sessions" style={{ maxWidth: 900 }}>
-            {eyebrow('07', 'Sessions board')}
-            {h2('Every session, on one board, from running to reviewed.')}
-            {lead('Each task an agent runs becomes a session. Track them all in one place, what is running, what is waiting for review with a ready PR, and what is done, across every connected machine.')}
-            <SessionsBoard />
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 14, fontFamily: SANS }}>
+              <span style={{ fontSize: 16, letterSpacing: '-0.01em', color: aws, fontWeight: 700 }}>07</span>
+              <span style={{ fontSize: 16, letterSpacing: '-0.02em', color: '#fff', fontWeight: 700 }}>Sessions board</span>
+            </div>
+            <h2 style={{ fontSize: 'clamp(22px,2.4vw,32px)', fontWeight: 700, letterSpacing: '-0.035em', lineHeight: 1.08, margin: '0 0 14px', color: '#fff' }}>Every session, on one board, from running to reviewed.</h2>
+            <p style={{ fontSize: 13.5, lineHeight: 1.6, letterSpacing: '-0.01em', color: '#bbb', margin: '0 0 28px', fontWeight: 400, maxWidth: 560 }}>Each task an agent runs becomes a session. Track them all in one place, what is running, what is waiting for review with a ready PR, and what is done, across every connected machine.</p>
+            <SessionsBoard dark />
           </div>
         </section>
 
